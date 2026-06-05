@@ -11,12 +11,14 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name'  => ['required', 'string', 'max:100'],
-            'phone'      => ['required', 'string', 'unique:users,phone'],
-            'email'      => ['nullable', 'email', 'unique:users,email'],
-            'password'   => ['required', 'string', 'min:8', 'confirmed'],
-            'role'       => ['nullable', 'in:customer,vendor,driver'],
+            'first_name'    => ['required', 'string', 'max:100'],
+            'last_name'     => ['required', 'string', 'max:100'],
+            'phone'         => ['required', 'string', 'unique:users,phone'],
+            'email'         => ['nullable', 'email', 'unique:users,email'],
+            'password'      => ['required', 'string', 'min:8', 'confirmed'],
+            'role'          => ['nullable', 'in:customer,vendor,driver'],
+            'business_name' => ['required_if:role,vendor', 'nullable', 'string', 'max:200'],
+            'region'        => ['required_if:role,vendor', 'nullable', 'string', 'max:100'],
         ];
     }
 }

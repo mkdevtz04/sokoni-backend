@@ -10,6 +10,7 @@ use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Models\VendorProfile;
 use App\Services\OtpService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,14 +22,25 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
+        $role = $request->role ?? 'customer';
+
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
             'phone'      => $request->phone,
             'email'      => $request->email,
             'password'   => $request->password,
-            'role'       => $request->role ?? 'customer',
+            'role'       => $role === 'vendor' ? 'customer' : $role, // starts as customer until approved
         ]);
+
+        if ($role === 'vendor') {
+            VendorProfile::create([
+                'user_id'       => $user->id,
+                'business_name' => $request->business_name,
+                'region'        => $request->region,
+                'is_approved'   => false,
+            ]);
+        }
 
         $this->otpService->generate($user, 'phone');
 

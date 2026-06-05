@@ -30,8 +30,8 @@ class ProductResource extends JsonResource
             'primary_image'   => $this->when(
                 $this->relationLoaded('images'),
                 fn () => $this->images->where('is_primary', true)->first()
-                    ? asset('storage/' . $this->images->where('is_primary', true)->first()->image_path)
-                    : ($this->images->first() ? asset('storage/' . $this->images->first()->image_path) : null)
+                    ? 'storage/' . $this->images->where('is_primary', true)->first()->image_path
+                    : ($this->images->first() ? 'storage/' . $this->images->first()->image_path : null)
             ),
         ];
     }

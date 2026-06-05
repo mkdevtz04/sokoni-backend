@@ -2,9 +2,15 @@
 
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Auth\ProfileSetupController;
+use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\VendorController;
+use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\VendorController;
+use App\Http\Controllers\API\VendorProfileController;
+use App\Http\Controllers\API\VendorProductController;
+use App\Http\Controllers\API\VendorOrderController;
+use App\Http\Controllers\API\WalletController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,6 +60,51 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('setup',    [ProfileSetupController::class, 'setup']);
         Route::post('photo',    [ProfileSetupController::class, 'uploadPhoto']);
         Route::post('location', [ProfileSetupController::class, 'setLocation']);
+    });
+
+    // Cart
+    Route::prefix('cart')->group(function () {
+        Route::get('/',           [CartController::class, 'index']);
+        Route::post('add',        [CartController::class, 'add']);
+        Route::put('{item}',      [CartController::class, 'update']);
+        Route::delete('{item}',   [CartController::class, 'remove']);
+        Route::delete('/',        [CartController::class, 'clear']);
+    });
+
+    // Orders
+    Route::prefix('orders')->group(function () {
+        Route::get('/',           [OrderController::class, 'index']);
+        Route::post('place',      [OrderController::class, 'place']);
+        Route::get('{order}',     [OrderController::class, 'show']);
+        Route::post('{order}/cancel', [OrderController::class, 'cancel']);
+    });
+
+    // Wallet
+    Route::prefix('wallet')->group(function () {
+        Route::get('/',           [WalletController::class, 'index']);
+        Route::post('topup',      [WalletController::class, 'topup']);
+    });
+
+    // Vendor application & profile
+    Route::prefix('vendor')->group(function () {
+        Route::get('my-profile',  [VendorProfileController::class, 'myProfile']);
+        Route::post('apply',      [VendorProfileController::class, 'apply']);
+        Route::put('my-profile',  [VendorProfileController::class, 'update']);
+
+        // Vendor product management (approved vendors only)
+        Route::prefix('products')->group(function () {
+            Route::get('/',            [VendorProductController::class, 'index']);
+            Route::post('/',           [VendorProductController::class, 'store']);
+            Route::put('{product}',    [VendorProductController::class, 'update']);
+            Route::post('{product}',   [VendorProductController::class, 'update']); // multipart form update
+            Route::delete('{product}', [VendorProductController::class, 'destroy']);
+        });
+
+        // Vendor order management
+        Route::prefix('orders')->group(function () {
+            Route::get('/',                        [VendorOrderController::class, 'index']);
+            Route::put('{order}/status',           [VendorOrderController::class, 'updateStatus']);
+        });
     });
 
 });

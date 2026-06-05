@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'role'              => $this->role,
             'status'            => $this->status,
             'profile_picture'   => $this->profile_picture
-                ? asset('storage/' . $this->profile_picture)
+                ? 'storage/' . $this->profile_picture
                 : null,
             'profile_completed' => $this->profile_completed,
             'phone_verified'    => $this->phone_verified_at !== null,
