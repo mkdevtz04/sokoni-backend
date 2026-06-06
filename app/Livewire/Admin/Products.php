@@ -38,10 +38,10 @@ class Products extends Component
 
     public function render()
     {
-        $products = Product::with(['vendor', 'category'])
+        $products = Product::with(['vendorProfile', 'category'])
             ->when($this->search, fn ($q) =>
                 $q->where('name', 'like', "%{$this->search}%")
-                  ->orWhereHas('vendor', fn ($v) =>
+                  ->orWhereHas('vendorProfile', fn ($v) =>
                       $v->where('business_name', 'like', "%{$this->search}%")))
             ->latest()
             ->paginate(20);

@@ -28,7 +28,7 @@
                             <p class="font-medium text-gray-800">{{ $product->name }}</p>
                             <p class="text-xs text-gray-400">{{ $product->sku ?? '-' }}</p>
                         </td>
-                        <td class="px-5 py-3 text-gray-600">{{ $product->vendor->business_name ?? '-' }}</td>
+                        <td class="px-5 py-3 text-gray-600">{{ $product->vendorProfile->business_name ?? '-' }}</td>
                         <td class="px-5 py-3 text-gray-500 text-xs">{{ $product->category->name ?? 'Uncategorised' }}</td>
                         <td class="px-5 py-3 text-right font-semibold text-gray-800">
                             TZS {{ number_format($product->sale_price ?? $product->price) }}
