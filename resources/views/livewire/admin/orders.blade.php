@@ -37,7 +37,7 @@
                             {{ $order->user->full_name ?? '-' }}<br>
                             <span class="text-xs text-gray-400">{{ $order->user->phone ?? '' }}</span>
                         </td>
-                        <td class="px-5 py-3 text-gray-600">{{ $order->vendor->business_name ?? '-' }}</td>
+                        <td class="px-5 py-3 text-gray-600">{{ $order->vendorProfile->business_name ?? '-' }}</td>
                         <td class="px-5 py-3">
                             @if ($editingOrderId === $order->id)
                                 <select wire:model="newStatus"

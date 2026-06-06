@@ -22,9 +22,15 @@ class OrderResource extends JsonResource
             'confirmed_at'     => $this->confirmed_at,
             'delivered_at'     => $this->delivered_at,
             'created_at'       => $this->created_at,
-            'items'            => OrderItemResource::collection($this->whenLoaded('items')),
-            'vendor'           => new VendorResource($this->whenLoaded('vendorProfile')),
-            'delivery_address' => new AddressResource($this->whenLoaded('deliveryAddress')),
+            'payment_reference' => $this->when($this->relationLoaded('payment'), $this->payment?->reference),
+            'items'             => OrderItemResource::collection($this->whenLoaded('items')),
+            'vendor'            => new VendorResource($this->whenLoaded('vendorProfile')),
+            'delivery_address'  => new AddressResource($this->whenLoaded('deliveryAddress')),
+            'customer'          => $this->when($this->relationLoaded('user') && $this->user, [
+                'id'    => $this->user->id,
+                'name'  => trim(($this->user->first_name ?? '') . ' ' . ($this->user->last_name ?? '')),
+                'phone' => $this->user->phone,
+            ]),
         ];
     }
 }

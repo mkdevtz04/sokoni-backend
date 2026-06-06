@@ -76,4 +76,27 @@ class VendorProfileController extends Controller
 
         return response()->json(['data' => new VendorResource($vendor->fresh())]);
     }
+
+    public function uploadLogo(Request $request): JsonResponse
+    {
+        $vendor = $request->user()->vendorProfile;
+
+        if (! $vendor) {
+            return response()->json(['message' => 'No vendor profile found.'], 404);
+        }
+
+        $request->validate(['logo' => 'required|image|max:2048']);
+
+        if ($vendor->logo) {
+            Storage::disk('public')->delete($vendor->logo);
+        }
+
+        $path = $request->file('logo')->store('vendors/logos', 'public');
+        $vendor->update(['logo' => $path]);
+
+        return response()->json([
+            'message' => 'Logo updated.',
+            'data'    => new VendorResource($vendor->fresh()),
+        ]);
+    }
 }

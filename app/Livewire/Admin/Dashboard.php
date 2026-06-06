@@ -32,7 +32,7 @@ class Dashboard extends Component
                                       ->where('payment_status', 'paid')
                                       ->sum('total');
         $this->pendingApprovals = VendorProfile::where('is_approved', false)->count();
-        $this->recentOrders     = Order::with(['user', 'vendor.user'])
+        $this->recentOrders     = Order::with(['user', 'vendorProfile'])
                                       ->latest()
                                       ->take(8)
                                       ->get()

@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'snippe' => [
+        'api_key'            => env('SNIPPE_API_KEY'),
+        'webhook_secret'     => env('SNIPPE_WEBHOOK_SECRET'),
+        'base_url'           => env('SNIPPE_BASE_URL', 'https://api.snippe.sh/v1'),
+        'commission_percent' => env('PLATFORM_COMMISSION_PERCENT', 5),
+    ],
+
 ];

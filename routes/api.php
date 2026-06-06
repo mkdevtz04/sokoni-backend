@@ -5,8 +5,10 @@ use App\Http\Controllers\API\Auth\ProfileSetupController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\OrderController;
+use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\VendorController;
+use App\Http\Controllers\API\VendorEarningController;
 use App\Http\Controllers\API\VendorProfileController;
 use App\Http\Controllers\API\VendorProductController;
 use App\Http\Controllers\API\VendorOrderController;
@@ -26,6 +28,13 @@ Route::prefix('auth')->group(function () {
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password',  [AuthController::class, 'resetPassword']);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Payment Webhook (public — no auth, called by Snippe)
+|--------------------------------------------------------------------------
+*/
+Route::post('payments/callback', [PaymentController::class, 'callback']);
 
 /*
 |--------------------------------------------------------------------------
@@ -87,9 +96,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Vendor application & profile
     Route::prefix('vendor')->group(function () {
-        Route::get('my-profile',  [VendorProfileController::class, 'myProfile']);
-        Route::post('apply',      [VendorProfileController::class, 'apply']);
-        Route::put('my-profile',  [VendorProfileController::class, 'update']);
+        Route::get('my-profile',        [VendorProfileController::class, 'myProfile']);
+        Route::post('apply',            [VendorProfileController::class, 'apply']);
+        Route::put('my-profile',        [VendorProfileController::class, 'update']);
+        Route::post('my-profile/logo',  [VendorProfileController::class, 'uploadLogo']);
 
         // Vendor product management (approved vendors only)
         Route::prefix('products')->group(function () {
@@ -104,6 +114,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('orders')->group(function () {
             Route::get('/',                        [VendorOrderController::class, 'index']);
             Route::put('{order}/status',           [VendorOrderController::class, 'updateStatus']);
+        });
+
+        // Vendor earnings & withdrawals
+        Route::prefix('earnings')->group(function () {
+            Route::get('/',        [VendorEarningController::class, 'index']);
+            Route::post('withdraw',[VendorEarningController::class, 'requestWithdrawal']);
         });
     });
 

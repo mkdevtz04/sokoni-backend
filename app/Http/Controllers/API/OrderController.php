@@ -7,6 +7,8 @@ use App\Http\Resources\OrderResource;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\VendorEarning;
+use App\Services\SnippeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -121,18 +123,57 @@ class OrderController extends Controller
 
             if ($request->payment_method === 'cash') {
                 $order->update(['status' => 'confirmed', 'confirmed_at' => now()]);
+                // Record vendor earning immediately for cash orders
+                $this->recordEarning($order);
+            }
+
+            // Initiate M-Pesa STK push via Snippe
+            $snippeReference = null;
+            if ($request->payment_method === 'mobile_money') {
+                $snippe = app(SnippeService::class);
+                $result = $snippe->initiatePayment(
+                    $total,
+                    $request->payment_phone,
+                    $order->id,
+                    $order->order_number
+                );
+                if ($result['success']) {
+                    $snippeReference = $result['reference'];
+                    $payment->update(['reference' => $snippeReference]);
+                }
+                // Order stays pending even if Snippe call fails — customer can retry
             }
 
             // Remove ordered items from cart
             $cart->items()->whereIn('product_id', $vendorItems->pluck('product_id'))->delete();
 
-            $order->load(['items', 'vendorProfile', 'deliveryAddress']);
+            $order->load(['items', 'vendorProfile', 'deliveryAddress', 'payment']);
 
             return response()->json([
-                'message' => 'Order placed successfully.',
-                'data'    => new OrderResource($order),
+                'message'          => 'Order placed successfully.',
+                'data'             => new OrderResource($order),
+                'payment_reference'=> $snippeReference,
             ], 201);
         });
+    }
+
+    private function recordEarning(Order $order): void
+    {
+        if (VendorEarning::where('order_id', $order->id)->exists()) {
+            return;
+        }
+        $pct        = (float) config('services.snippe.commission_percent', 5);
+        $gross      = $order->subtotal;
+        $commission = round($gross * ($pct / 100), 2);
+
+        VendorEarning::create([
+            'vendor_id'    => $order->vendor_id,
+            'order_id'     => $order->id,
+            'gross_amount' => $gross,
+            'commission'   => $commission,
+            'net_amount'   => round($gross - $commission, 2),
+            'status'       => 'pending',
+        ]);
     }
 
     public function cancel(Request $request, Order $order): JsonResponse

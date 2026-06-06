@@ -21,4 +21,5 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::get('users',      \App\Livewire\Admin\Users::class)->name('users');
     Route::get('products',   \App\Livewire\Admin\Products::class)->name('products');
     Route::get('orders',     \App\Livewire\Admin\Orders::class)->name('orders');
+    Route::get('payouts',    \App\Livewire\Admin\Payouts::class)->name('payouts');
 });

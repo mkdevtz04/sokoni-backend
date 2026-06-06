@@ -54,7 +54,7 @@ class Orders extends Component
 
     public function render()
     {
-        $orders = Order::with(['user', 'vendor'])
+        $orders = Order::with(['user', 'vendorProfile'])
             ->when($this->search, fn ($q) =>
                 $q->where('order_number', 'like', "%{$this->search}%")
                   ->orWhereHas('user', fn ($u) =>

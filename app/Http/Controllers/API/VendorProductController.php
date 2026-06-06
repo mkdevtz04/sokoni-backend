@@ -21,7 +21,6 @@ class VendorProductController extends Controller
     {
         $products = Product::where('vendor_id', $this->vendorId($request))
             ->with(['images', 'category'])
-            ->withTrashed()
             ->latest()
             ->paginate(30);
 
@@ -116,7 +115,13 @@ class VendorProductController extends Controller
     public function destroy(Request $request, Product $product): JsonResponse
     {
         $this->authorizeProduct($request, $product);
-        $product->delete();
+
+        // Delete image files from storage before removing the record
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+
+        $product->forceDelete(); // hard delete — order items already snapshot name/price
 
         return response()->json(['message' => 'Product deleted.']);
     }

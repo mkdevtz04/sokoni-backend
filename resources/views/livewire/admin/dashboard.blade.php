@@ -50,7 +50,7 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-5 py-3 font-medium text-gray-800">{{ $order['order_number'] }}</td>
                         <td class="px-5 py-3 text-gray-600">{{ $order['user']['first_name'] ?? '-' }} {{ $order['user']['last_name'] ?? '' }}</td>
-                        <td class="px-5 py-3 text-gray-600">{{ $order['vendor']['business_name'] ?? '-' }}</td>
+                        <td class="px-5 py-3 text-gray-600">{{ $order['vendor_profile']['business_name'] ?? '-' }}</td>
                         <td class="px-5 py-3">
                             @php
                                 $sc = ['pending'=>'bg-yellow-100 text-yellow-700','confirmed'=>'bg-blue-100 text-blue-700','preparing'=>'bg-purple-100 text-purple-700','ready'=>'bg-teal-100 text-teal-700','out_for_delivery'=>'bg-green-100 text-green-700','delivered'=>'bg-green-100 text-green-800','cancelled'=>'bg-red-100 text-red-700','refunded'=>'bg-gray-100 text-gray-600'];
