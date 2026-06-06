@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public ───────────────────────────────────────────────────────────────────
-Route::get('/', fn () => redirect()->route('admin.login'));
+Route::get('/', fn () => view('welcome'))->name('home');
 
 // ── Admin auth (guest) ────────────────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
