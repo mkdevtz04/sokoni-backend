@@ -8,7 +8,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\VendorEarning;
-use App\Services\SnippeService;
+use App\Services\PalmPesaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -127,21 +127,23 @@ class OrderController extends Controller
                 $this->recordEarning($order);
             }
 
-            // Initiate M-Pesa STK push via Snippe
-            $snippeReference = null;
+            // Initiate STK push via PalmPesa
+            $palmReference = null;
             if ($request->payment_method === 'mobile_money') {
-                $snippe = app(SnippeService::class);
-                $result = $snippe->initiatePayment(
-                    $total,
-                    $request->payment_phone,
-                    $order->id,
-                    $order->order_number
+                $user   = $request->user();
+                $result = (new PalmPesaService())->initiatePayment(
+                    amount:        $total,
+                    phone:         $request->payment_phone,
+                    orderId:       $order->id,
+                    orderNumber:   $order->order_number,
+                    customerName:  trim($user->first_name . ' ' . $user->last_name),
+                    customerEmail: $user->email ?? '',
                 );
                 if ($result['success']) {
-                    $snippeReference = $result['reference'];
-                    $payment->update(['reference' => $snippeReference]);
+                    $palmReference = $result['reference'];
+                    $payment->update(['reference' => $palmReference]);
                 }
-                // Order stays pending even if Snippe call fails — customer can retry
+                // Order stays pending even if PalmPesa call fails — customer can retry
             }
 
             // Remove ordered items from cart
@@ -150,9 +152,9 @@ class OrderController extends Controller
             $order->load(['items', 'vendorProfile', 'deliveryAddress', 'payment']);
 
             return response()->json([
-                'message'          => 'Order placed successfully.',
-                'data'             => new OrderResource($order),
-                'payment_reference'=> $snippeReference,
+                'message'           => 'Order placed successfully.',
+                'data'              => new OrderResource($order),
+                'payment_reference' => $palmReference,
             ], 201);
         });
     }
@@ -162,7 +164,7 @@ class OrderController extends Controller
         if (VendorEarning::where('order_id', $order->id)->exists()) {
             return;
         }
-        $pct        = (float) config('services.snippe.commission_percent', 5);
+        $pct        = (float) config('services.palmpesa.commission_percent', 5);
         $gross      = $order->subtotal;
         $commission = round($gross * ($pct / 100), 2);
 

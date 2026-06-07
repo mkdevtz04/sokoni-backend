@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\VendorEarning;
-use App\Services\SnippeService;
+use App\Services\PalmPesaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,45 +14,44 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    public function __construct(private SnippeService $snippe) {}
+    public function __construct(private PalmPesaService $palmpesa) {}
 
     /**
-     * Snippe webhook — called when a payment succeeds or fails.
+     * PalmPesa webhook — called asynchronously when payment status changes.
      * Route: POST /api/payments/callback  (public, no auth)
+     *
+     * Expected payload:
+     *   { "order_id": "PALMPESA17683440586334", "payment_status": "COMPLETED" }
+     *
+     * payment_status values: COMPLETED | FAILED | CANCELLED | PENDING
      */
     public function callback(Request $request): JsonResponse
     {
-        $rawBody   = $request->getContent();
-        $signature = $request->header('X-Webhook-Signature', '');
-        $timestamp = $request->header('X-Webhook-Timestamp', '');
+        $payload       = $request->json()->all();
+        $palmOrderId   = $payload['order_id']       ?? null;
+        $paymentStatus = strtoupper($payload['payment_status'] ?? '');
 
-        if (! $this->snippe->verifyWebhookSignature($rawBody, $signature, $timestamp)) {
-            Log::warning('Snippe webhook: invalid signature');
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+        Log::info('PalmPesa callback received', [
+            'order_id'       => $palmOrderId,
+            'payment_status' => $paymentStatus,
+        ]);
 
-        $payload = $request->json()->all();
-        $type    = $payload['type'] ?? '';
-        $data    = $payload['data'] ?? [];
-        $ref     = $data['reference'] ?? null;
-
-        Log::info('Snippe webhook received', ['type' => $type, 'reference' => $ref]);
-
-        if (! $ref) {
+        // Must return 200 immediately — PalmPesa will retry if we don't
+        if (! $palmOrderId) {
             return response()->json(['message' => 'ok']);
         }
 
-        $payment = Payment::where('reference', $ref)->first();
+        $payment = Payment::where('reference', $palmOrderId)->first();
 
         if (! $payment) {
-            Log::warning('Snippe webhook: payment not found', ['reference' => $ref]);
+            Log::warning('PalmPesa callback: payment not found', ['reference' => $palmOrderId]);
             return response()->json(['message' => 'ok']);
         }
 
-        match ($type) {
-            'payment.completed' => $this->handleCompleted($payment, $data),
-            'payment.failed'    => $this->handleFailed($payment, $data),
-            default             => null,
+        match ($paymentStatus) {
+            'COMPLETED'            => $this->handleCompleted($payment, $payload),
+            'FAILED', 'CANCELLED'  => $this->handleFailed($payment, $payload),
+            default                => null, // PENDING — do nothing, wait for next callback
         };
 
         return response()->json(['message' => 'ok']);
@@ -102,7 +101,7 @@ class PaymentController extends Controller
                 return;
             }
 
-            $order->update(['status' => 'cancelled']);
+            $order->update(['status' => 'cancelled', 'payment_status' => 'failed']);
 
             // Restore stock
             foreach ($order->items as $item) {
@@ -120,7 +119,7 @@ class PaymentController extends Controller
             return;
         }
 
-        $commissionPct = $this->snippe->commissionPercent();
+        $commissionPct = $this->palmpesa->commissionPercent();
         $gross         = $order->subtotal;
         $commission    = round($gross * ($commissionPct / 100), 2);
         $net           = round($gross - $commission, 2);

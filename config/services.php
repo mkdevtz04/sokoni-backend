@@ -35,10 +35,10 @@ return [
         ],
     ],
 
-    'snippe' => [
-        'api_key'            => env('SNIPPE_API_KEY'),
-        'webhook_secret'     => env('SNIPPE_WEBHOOK_SECRET'),
-        'base_url'           => env('SNIPPE_BASE_URL', 'https://api.snippe.sh/v1'),
+    'palmpesa' => [
+        'api_token'          => env('PALMPESA_API_TOKEN'),
+        'user_id'            => env('PALMPESA_USER_ID'),
+        'base_url'           => env('PALMPESA_BASE_URL', 'https://palmpesa.drmlelwa.co.tz'),
         'commission_percent' => env('PLATFORM_COMMISSION_PERCENT', 5),
     ],
 
