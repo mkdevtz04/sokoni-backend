@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\VendorEarning;
+use App\Services\FcmService;
 use App\Services\PalmPesaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -81,6 +82,22 @@ class PaymentController extends Controller
             ]);
 
             $this->recordVendorEarning($order);
+
+            // Notify customer — payment received
+            app(FcmService::class)->notifyUser(
+                userId: $order->user_id,
+                title:  '✅ Payment Confirmed',
+                body:   "Payment for order #{$order->order_number} was successful!",
+                data:   ['type' => 'payment_confirmed', 'order_id' => (string) $order->id],
+            );
+
+            // Notify vendor — order paid and confirmed
+            app(FcmService::class)->notifyUser(
+                userId: $order->vendor_id,
+                title:  '💰 Payment Received',
+                body:   "Order #{$order->order_number} has been paid. Ready to prepare!",
+                data:   ['type' => 'order_paid', 'order_id' => (string) $order->id],
+            );
         });
     }
 

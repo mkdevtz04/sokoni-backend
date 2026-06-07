@@ -8,6 +8,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\VendorEarning;
+use App\Services\FcmService;
 use App\Services\PalmPesaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -64,10 +65,9 @@ class OrderController extends Controller
 
         return DB::transaction(function () use ($request, $cart, $vendorItems) {
             $subtotal    = $vendorItems->sum(fn ($i) => $i->price * $i->quantity);
-            $deliveryFee = 2000; // flat fee — implement dynamic later
+            $deliveryFee = 2000;
             $total       = $subtotal + $deliveryFee;
 
-            // Wallet check
             if ($request->payment_method === 'wallet') {
                 $wallet = $request->user()->getOrCreateWallet();
                 if ($wallet->balance < $total) {
@@ -98,12 +98,10 @@ class OrderController extends Controller
                     'quantity'      => $item->quantity,
                     'subtotal'      => $item->price * $item->quantity,
                 ]);
-                // Decrement stock
                 $item->product->decrement('stock', $item->quantity);
                 $item->product->increment('total_orders');
             }
 
-            // Process payment
             $payment = Payment::create([
                 'user_id'  => $request->user()->id,
                 'order_id' => $order->id,
@@ -123,11 +121,9 @@ class OrderController extends Controller
 
             if ($request->payment_method === 'cash') {
                 $order->update(['status' => 'confirmed', 'confirmed_at' => now()]);
-                // Record vendor earning immediately for cash orders
                 $this->recordEarning($order);
             }
 
-            // Initiate STK push via PalmPesa
             $palmReference = null;
             if ($request->payment_method === 'mobile_money') {
                 $user   = $request->user();
@@ -143,10 +139,16 @@ class OrderController extends Controller
                     $palmReference = $result['reference'];
                     $payment->update(['reference' => $palmReference]);
                 }
-                // Order stays pending even if PalmPesa call fails — customer can retry
             }
 
-            // Remove ordered items from cart
+            // Notify vendor about the new order
+            app(FcmService::class)->notifyUser(
+                userId: (int) $request->vendor_id,
+                title:  '🛒 New Order Received',
+                body:   "Order #{$order->order_number} — TZS " . number_format($total),
+                data:   ['type' => 'new_order', 'order_id' => (string) $order->id],
+            );
+
             $cart->items()->whereIn('product_id', $vendorItems->pluck('product_id'))->delete();
 
             $order->load(['items', 'vendorProfile', 'deliveryAddress', 'payment']);
@@ -190,7 +192,6 @@ class OrderController extends Controller
 
         $order->update(['status' => 'cancelled']);
 
-        // Restore stock
         foreach ($order->items as $item) {
             if ($item->product) {
                 $item->product->increment('stock', $item->quantity);

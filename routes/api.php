@@ -12,6 +12,7 @@ use App\Http\Controllers\API\VendorEarningController;
 use App\Http\Controllers\API\VendorProfileController;
 use App\Http\Controllers\API\VendorProductController;
 use App\Http\Controllers\API\VendorOrderController;
+use App\Http\Controllers\API\DeviceTokenController;
 use App\Http\Controllers\API\WalletController;
 use Illuminate\Support\Facades\Route;
 
@@ -87,6 +88,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{order}',     [OrderController::class, 'show']);
         Route::post('{order}/cancel', [OrderController::class, 'cancel']);
     });
+
+    // Device tokens (push notifications)
+    Route::post('device-token',   [DeviceTokenController::class, 'store']);
+    Route::delete('device-token', [DeviceTokenController::class, 'destroy']);
 
     // Wallet
     Route::prefix('wallet')->group(function () {

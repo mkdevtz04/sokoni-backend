@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\VendorEarning;
+use App\Services\FcmService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -46,6 +47,26 @@ class VendorOrderController extends Controller
             $this->ensureEarningExists($order->fresh());
         }
 
+        // Notify the customer about their order status change
+        $statusMessages = [
+            'confirmed'        => ['title' => '✅ Order Confirmed',       'body' => "Your order #{$order->order_number} has been confirmed!"],
+            'preparing'        => ['title' => '👨‍🍳 Order Being Prepared',  'body' => "Your order #{$order->order_number} is being prepared."],
+            'ready'            => ['title' => '📦 Order Ready',           'body' => "Your order #{$order->order_number} is ready for pickup/delivery."],
+            'out_for_delivery' => ['title' => '🚴 Out for Delivery',      'body' => "Your order #{$order->order_number} is on its way!"],
+            'delivered'        => ['title' => '🎉 Order Delivered',       'body' => "Your order #{$order->order_number} has been delivered. Enjoy!"],
+            'cancelled'        => ['title' => '❌ Order Cancelled',       'body' => "Your order #{$order->order_number} has been cancelled."],
+        ];
+
+        if (isset($statusMessages[$data['status']])) {
+            $msg = $statusMessages[$data['status']];
+            app(FcmService::class)->notifyUser(
+                userId: $order->user_id,
+                title:  $msg['title'],
+                body:   $msg['body'],
+                data:   ['type' => 'order_status', 'order_id' => (string) $order->id],
+            );
+        }
+
         return response()->json(['data' => new OrderResource($order->fresh(['user', 'items.product.images']))]);
     }
 
@@ -54,7 +75,7 @@ class VendorOrderController extends Controller
         if (VendorEarning::where('order_id', $order->id)->exists()) {
             return;
         }
-        $pct        = (float) config('services.snippe.commission_percent', 5);
+        $pct        = (float) config('services.palmpesa.commission_percent', 5);
         $gross      = $order->subtotal;
         $commission = round($gross * ($pct / 100), 2);
 

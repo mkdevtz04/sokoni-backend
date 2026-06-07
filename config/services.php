@@ -35,6 +35,10 @@ return [
         ],
     ],
 
+    'fcm' => [
+        'server_key' => env('FCM_SERVER_KEY'),
+    ],
+
     'palmpesa' => [
         'api_token'          => env('PALMPESA_API_TOKEN'),
         'user_id'            => env('PALMPESA_USER_ID'),
