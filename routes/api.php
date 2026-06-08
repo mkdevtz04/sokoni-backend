@@ -76,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('setup',    [ProfileSetupController::class, 'setup']);
         Route::post('photo',    [ProfileSetupController::class, 'uploadPhoto']);
         Route::post('location', [ProfileSetupController::class, 'setLocation']);
+        Route::put('password',  [ProfileSetupController::class, 'changePassword']);
     });
 
     // Cart

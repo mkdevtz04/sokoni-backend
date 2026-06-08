@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\UserAddress;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileSetupController extends Controller
@@ -51,6 +52,22 @@ class ProfileSetupController extends Controller
             'message'         => 'Photo uploaded.',
             'profile_picture' => asset('storage/' . $path),
         ]);
+    }
+
+    public function changePassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'current_password' => ['required'],
+            'password'         => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        if (! Hash::check($request->current_password, $request->user()->password)) {
+            return response()->json(['message' => 'Current password is incorrect.'], 422);
+        }
+
+        $request->user()->update(['password' => Hash::make($request->password)]);
+
+        return response()->json(['message' => 'Password changed successfully.']);
     }
 
     public function setLocation(Request $request): JsonResponse
