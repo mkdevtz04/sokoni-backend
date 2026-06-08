@@ -22,8 +22,58 @@ class DriverController extends Controller
         if (! $driver) {
             return response()->json(['message' => 'Driver profile not found'], 404);
         }
-        $driver->load('application');
-        return response()->json(['data' => $driver]);
+        $user = $request->user();
+        return response()->json(['data' => [
+            'id'               => $driver->id,
+            'status'           => $driver->status,
+            'rating'           => (float) ($driver->rating ?? 0),
+            'total_deliveries' => (int) ($driver->total_deliveries ?? 0),
+            'user'             => [
+                'id'              => $user->id,
+                'first_name'      => $user->first_name,
+                'last_name'       => $user->last_name,
+                'full_name'       => $user->full_name,
+                'phone'           => $user->phone,
+                'email'           => $user->email,
+                'profile_picture' => $user->profile_picture,
+            ],
+        ]]);
+    }
+
+    /** Driver's completed delivery history */
+    public function history(Request $request): JsonResponse
+    {
+        $driver = $this->driver($request);
+        if (! $driver) return response()->json(['data' => []]);
+
+        $orders = Order::with(['vendorProfile', 'deliveryAddress'])
+            ->where('driver_id', $driver->id)
+            ->where('status', 'delivered')
+            ->latest()
+            ->paginate(20);
+
+        return response()->json([
+            'data' => $this->formatOrders($orders),
+            'meta' => [
+                'total'        => $orders->total(),
+                'current_page' => $orders->currentPage(),
+                'last_page'    => $orders->lastPage(),
+            ],
+        ]);
+    }
+
+    /** Update driver's own user profile (name, email) */
+    public function updateProfile(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'first_name' => 'required|string|max:80',
+            'last_name'  => 'required|string|max:80',
+            'email'      => 'nullable|email|max:180|unique:users,email,' . $request->user()->id,
+        ]);
+
+        $request->user()->update($data);
+
+        return response()->json(['user' => $request->user()->fresh()]);
     }
 
     /** Deliveries available to accept (status = ready, no driver assigned) */

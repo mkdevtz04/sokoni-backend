@@ -42,6 +42,7 @@
             <a href="#features" class="text-sm font-medium text-gray-600 hover:text-primary">Features</a>
             <a href="#how-it-works" class="text-sm font-medium text-gray-600 hover:text-primary">How it works</a>
             <a href="#vendors" class="text-sm font-medium text-gray-600 hover:text-primary">For Vendors</a>
+            <a href="{{ route('become-driver') }}" class="text-sm font-medium text-gray-600 hover:text-primary">For Drivers</a>
             <a href="{{ route('admin.login') }}" class="text-sm font-medium text-gray-500 hover:text-primary">Admin</a>
         </div>
         <div class="flex items-center gap-3">
@@ -58,6 +59,7 @@
         <a href="#features" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary">Features</a>
         <a href="#how-it-works" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary">How it works</a>
         <a href="#vendors" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary">For Vendors</a>
+        <a href="{{route('become-driver')}}" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary">For Drivers</a>
         <a href="{{ route('admin.login') }}" class="block py-2 text-sm font-medium text-gray-500 hover:text-primary">Admin Login</a>
         <a href="#download" class="block mt-2 text-center bg-primary text-white text-sm font-semibold py-2.5 rounded-xl">Download App</a>
     </div>

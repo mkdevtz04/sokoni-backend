@@ -121,6 +121,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Driver (approved drivers only)
     Route::prefix('driver')->group(function () {
         Route::get('profile',                           [DriverController::class, 'profile']);
+        Route::put('profile',                           [DriverController::class, 'updateProfile']);
+        Route::get('history',                           [DriverController::class, 'history']);
         Route::get('deliveries/available',              [DriverController::class, 'available']);
         Route::get('deliveries',                        [DriverController::class, 'myDeliveries']);
         Route::post('deliveries/{order}/accept',        [DriverController::class, 'accept']);
