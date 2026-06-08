@@ -42,6 +42,12 @@ class VendorOrderController extends Controller
         if ($data['status'] === 'confirmed') {
             $order->update(['confirmed_at' => now()]);
         }
+        if ($data['status'] === 'preparing') {
+            $order->update(['preparing_at' => now()]);
+        }
+        if ($data['status'] === 'ready') {
+            $order->update(['ready_at' => now()]);
+        }
         if ($data['status'] === 'delivered') {
             $order->update(['delivered_at' => now(), 'payment_status' => 'paid']);
             $this->ensureEarningExists($order->fresh());

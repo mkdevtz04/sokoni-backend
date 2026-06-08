@@ -114,8 +114,9 @@ class DriverController extends Controller
         }
 
         $order->update([
-            'driver_id' => $driver->id,
-            'status'    => 'out_for_delivery',
+            'driver_id'           => $driver->id,
+            'status'              => 'out_for_delivery',
+            'out_for_delivery_at' => now(),
         ]);
 
         FcmService::notifyUser(
