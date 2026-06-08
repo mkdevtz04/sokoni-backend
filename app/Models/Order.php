@@ -16,7 +16,7 @@ class Order extends Model
         'order_number', 'user_id', 'vendor_id', 'status',
         'subtotal', 'delivery_fee', 'total',
         'payment_status', 'payment_method',
-        'delivery_address_id', 'delivery_note',
+        'delivery_address_id', 'driver_id', 'delivery_note',
         'confirmed_at', 'delivered_at',
     ];
 
@@ -51,6 +51,11 @@ class Order extends Model
     public function deliveryAddress(): BelongsTo
     {
         return $this->belongsTo(UserAddress::class, 'delivery_address_id');
+    }
+
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(Driver::class);
     }
 
     public function payment(): HasOne

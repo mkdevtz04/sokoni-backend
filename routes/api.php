@@ -13,6 +13,9 @@ use App\Http\Controllers\API\VendorProfileController;
 use App\Http\Controllers\API\VendorProductController;
 use App\Http\Controllers\API\VendorOrderController;
 use App\Http\Controllers\API\DeviceTokenController;
+use App\Http\Controllers\API\DriverController;
+use App\Http\Controllers\API\ReviewController;
+use App\Http\Controllers\API\UserAddressController;
 use App\Http\Controllers\API\WalletController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +56,9 @@ Route::get('vendors/{vendor}/products',        [VendorController::class, 'produc
 Route::get('products',                         [ProductController::class, 'index']);
 Route::get('products/featured',                [ProductController::class, 'featured']);
 Route::get('products/{product}',               [ProductController::class, 'show']);
+Route::get('products/{product}/reviews',       [ReviewController::class, 'forProduct']);
+
+Route::get('vendors/{vendorId}/reviews',       [ReviewController::class, 'forVendor']);
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +95,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{order}/cancel', [OrderController::class, 'cancel']);
     });
 
+    // Reviews
+    Route::post('orders/{order}/review',       [ReviewController::class, 'store']);
+    Route::get('orders/{order}/review/check',  [ReviewController::class, 'check']);
+
+    // Delivery addresses
+    Route::prefix('addresses')->group(function () {
+        Route::get('/',                         [UserAddressController::class, 'index']);
+        Route::post('/',                        [UserAddressController::class, 'store']);
+        Route::put('{address}',                 [UserAddressController::class, 'update']);
+        Route::delete('{address}',              [UserAddressController::class, 'destroy']);
+        Route::post('{address}/set-default',    [UserAddressController::class, 'setDefault']);
+    });
+
     // Device tokens (push notifications)
     Route::post('device-token',   [DeviceTokenController::class, 'store']);
     Route::delete('device-token', [DeviceTokenController::class, 'destroy']);
@@ -97,6 +116,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('wallet')->group(function () {
         Route::get('/',           [WalletController::class, 'index']);
         Route::post('topup',      [WalletController::class, 'topup']);
+    });
+
+    // Driver (approved drivers only)
+    Route::prefix('driver')->group(function () {
+        Route::get('profile',                           [DriverController::class, 'profile']);
+        Route::get('deliveries/available',              [DriverController::class, 'available']);
+        Route::get('deliveries',                        [DriverController::class, 'myDeliveries']);
+        Route::post('deliveries/{order}/accept',        [DriverController::class, 'accept']);
+        Route::put('deliveries/{order}/status',         [DriverController::class, 'updateStatus']);
+        Route::post('location',                         [DriverController::class, 'updateLocation']);
     });
 
     // Vendor application & profile

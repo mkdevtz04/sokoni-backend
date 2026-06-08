@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Web\DriverApplicationController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public ───────────────────────────────────────────────────────────────────
 Route::get('/', fn () => view('welcome'))->name('home');
+
+Route::get('become-driver',  [DriverApplicationController::class, 'show'])->name('become-driver');
+Route::post('become-driver', [DriverApplicationController::class, 'store'])->name('become-driver.store');
 
 // ── Admin auth (guest) ────────────────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -22,4 +26,6 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::get('products',   \App\Livewire\Admin\Products::class)->name('products');
     Route::get('orders',     \App\Livewire\Admin\Orders::class)->name('orders');
     Route::get('payouts',    \App\Livewire\Admin\Payouts::class)->name('payouts');
+    Route::get('drivers',      \App\Livewire\Admin\Drivers::class)->name('drivers');
+    Route::get('transactions', \App\Livewire\Admin\Transactions::class)->name('transactions');
 });
