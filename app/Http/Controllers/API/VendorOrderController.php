@@ -15,7 +15,7 @@ class VendorOrderController extends Controller
     public function index(Request $request): JsonResponse
     {
         $orders = Order::where('vendor_id', $request->user()->id)
-            ->with(['user', 'items.product.images'])
+            ->with(['user', 'items.product.images', 'driver.user'])
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
             ->latest()
             ->paginate(20);
@@ -73,7 +73,7 @@ class VendorOrderController extends Controller
             );
         }
 
-        return response()->json(['data' => new OrderResource($order->fresh(['user', 'items.product.images']))]);
+        return response()->json(['data' => new OrderResource($order->fresh(['user', 'items.product.images', 'driver.user']))]);
     }
 
     private function ensureEarningExists(Order $order): void

@@ -18,14 +18,17 @@ class Order extends Model
         'payment_status', 'payment_method',
         'delivery_address_id', 'driver_id', 'delivery_note',
         'confirmed_at', 'delivered_at',
+        'customer_latitude', 'customer_longitude',
     ];
 
     protected $casts = [
-        'subtotal'      => 'float',
-        'delivery_fee'  => 'float',
-        'total'         => 'float',
-        'confirmed_at'  => 'datetime',
-        'delivered_at'  => 'datetime',
+        'subtotal'           => 'float',
+        'delivery_fee'       => 'float',
+        'total'              => 'float',
+        'confirmed_at'       => 'datetime',
+        'delivered_at'       => 'datetime',
+        'customer_latitude'  => 'float',
+        'customer_longitude' => 'float',
     ];
 
     public function user(): BelongsTo

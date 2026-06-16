@@ -90,10 +90,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Orders
     Route::prefix('orders')->group(function () {
-        Route::get('/',           [OrderController::class, 'index']);
-        Route::post('place',      [OrderController::class, 'place']);
-        Route::get('{order}',     [OrderController::class, 'show']);
-        Route::post('{order}/cancel', [OrderController::class, 'cancel']);
+        Route::get('delivery-fee',              [OrderController::class,  'deliveryFee']);
+        Route::get('/',                         [OrderController::class,  'index']);
+        Route::post('place',                    [OrderController::class,  'place']);
+        Route::get('{order}',                   [OrderController::class,  'show']);
+        Route::post('{order}/cancel',           [OrderController::class,  'cancel']);
+        Route::post('{order}/verify-payment',   [PaymentController::class,'verifyPayment']);
     });
 
     // Reviews
@@ -140,11 +142,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Vendor product management (approved vendors only)
         Route::prefix('products')->group(function () {
-            Route::get('/',            [VendorProductController::class, 'index']);
-            Route::post('/',           [VendorProductController::class, 'store']);
-            Route::put('{product}',    [VendorProductController::class, 'update']);
-            Route::post('{product}',   [VendorProductController::class, 'update']); // multipart form update
-            Route::delete('{product}', [VendorProductController::class, 'destroy']);
+            Route::get('/',                                        [VendorProductController::class, 'index']);
+            Route::post('/',                                       [VendorProductController::class, 'store']);
+            Route::put('{product}',                                [VendorProductController::class, 'update']);
+            Route::post('{product}',                               [VendorProductController::class, 'update']); // multipart form update
+            Route::delete('{product}/images/{imageId}',            [VendorProductController::class, 'deleteImage']);
+            Route::delete('{product}',                             [VendorProductController::class, 'destroy']);
         });
 
         // Vendor order management

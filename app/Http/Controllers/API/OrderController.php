@@ -7,7 +7,9 @@ use App\Http\Resources\OrderResource;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\UserAddress;
 use App\Models\VendorEarning;
+use App\Models\VendorProfile;
 use App\Services\FcmService;
 use App\Services\PalmPesaService;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +21,7 @@ class OrderController extends Controller
     public function index(Request $request): JsonResponse
     {
         $orders = Order::where('user_id', $request->user()->id)
-            ->with(['items', 'vendorProfile'])
+            ->with(['items', 'vendorProfile', 'driver.user'])
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
             ->latest()
             ->paginate(15);
@@ -36,7 +38,7 @@ class OrderController extends Controller
             return response()->json(['message' => 'Not found.'], 404);
         }
 
-        $order->load(['items.product.images', 'vendorProfile', 'deliveryAddress', 'payment']);
+        $order->load(['items.product.images', 'vendorProfile', 'deliveryAddress', 'payment', 'driver.user']);
 
         return response()->json(['data' => new OrderResource($order)]);
     }
@@ -49,6 +51,8 @@ class OrderController extends Controller
             'payment_method'      => ['required', 'in:cash,mobile_money,wallet'],
             'delivery_note'       => ['nullable', 'string', 'max:500'],
             'payment_phone'       => ['required_if:payment_method,mobile_money', 'nullable', 'string'],
+            'customer_latitude'   => ['nullable', 'numeric'],
+            'customer_longitude'  => ['nullable', 'numeric'],
         ]);
 
         $cart = Cart::where('user_id', $request->user()->id)
@@ -65,7 +69,10 @@ class OrderController extends Controller
 
         return DB::transaction(function () use ($request, $cart, $vendorItems) {
             $subtotal    = $vendorItems->sum(fn ($i) => $i->price * $i->quantity);
-            $deliveryFee = 2000;
+            $deliveryFee = $this->calcDeliveryFee(
+                (int) $request->vendor_id,
+                $request->delivery_address_id
+            );
             $total       = $subtotal + $deliveryFee;
 
             if ($request->payment_method === 'wallet') {
@@ -87,6 +94,8 @@ class OrderController extends Controller
                 'payment_status'      => 'pending',
                 'delivery_address_id' => $request->delivery_address_id,
                 'delivery_note'       => $request->delivery_note,
+                'customer_latitude'   => $request->customer_latitude,
+                'customer_longitude'  => $request->customer_longitude,
             ]);
 
             foreach ($vendorItems as $item) {
@@ -159,6 +168,62 @@ class OrderController extends Controller
                 'payment_reference' => $palmReference,
             ], 201);
         });
+    }
+
+    public function deliveryFee(Request $request): JsonResponse
+    {
+        $vendorId = (int) $request->validate(['vendor_id' => 'required|integer'])['vendor_id'];
+        $lat      = $request->input('lat');
+        $lng      = $request->input('lng');
+
+        $vendor = VendorProfile::where('user_id', $vendorId)->first();
+
+        if (!$vendor || !$vendor->latitude || !$vendor->longitude || !$lat || !$lng) {
+            return response()->json(['fee' => 0, 'has_coordinates' => false]);
+        }
+
+        $distance = $this->haversineKm(
+            (float)$vendor->latitude, (float)$vendor->longitude,
+            (float)$lat, (float)$lng
+        );
+
+        return response()->json([
+            'fee'             => $this->feeFromKm($distance),
+            'has_coordinates' => true,
+            'distance_km'     => round($distance, 1),
+        ]);
+    }
+
+    private function calcDeliveryFee(int $vendorId, ?int $addressId): int
+    {
+        $vendor = VendorProfile::where('user_id', $vendorId)->first();
+        if (!$vendor || !$vendor->latitude || !$vendor->longitude || !$addressId) {
+            return 0;
+        }
+        $address = UserAddress::find($addressId);
+        if (!$address || !$address->latitude || !$address->longitude) {
+            return 0;
+        }
+        $distance = $this->haversineKm(
+            (float)$vendor->latitude, (float)$vendor->longitude,
+            (float)$address->latitude, (float)$address->longitude
+        );
+        return $this->feeFromKm($distance);
+    }
+
+    private function haversineKm(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $R    = 6371;
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a    = sin($dLat / 2) ** 2 +
+                cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) ** 2;
+        return $R * 2 * atan2(sqrt($a), sqrt(1 - $a));
+    }
+
+    private function feeFromKm(float $km): int
+    {
+        return min(20000, (int) (2000 + ceil($km) * 500));
     }
 
     private function recordEarning(Order $order): void

@@ -38,6 +38,8 @@ class VendorProfileController extends Controller
             'email'         => 'nullable|email|max:100',
             'region'        => 'required|string|max:80',
             'district'      => 'nullable|string|max:80',
+            'latitude'      => 'nullable|numeric|between:-90,90',
+            'longitude'     => 'nullable|numeric|between:-180,180',
         ]);
 
         $vendor = $request->user()->vendorProfile()->create(array_merge($data, [
@@ -70,6 +72,8 @@ class VendorProfileController extends Controller
             'ward'          => 'nullable|string|max:80',
             'street'        => 'nullable|string|max:120',
             'is_open'       => 'sometimes|boolean',
+            'latitude'      => 'nullable|numeric|between:-90,90',
+            'longitude'     => 'nullable|numeric|between:-180,180',
         ]);
 
         $vendor->update($data);

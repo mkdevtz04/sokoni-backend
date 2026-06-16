@@ -20,6 +20,8 @@ class VendorResource extends JsonResource
             'region'        => $this->region,
             'district'      => $this->district,
             'ward'          => $this->ward,
+            'latitude'      => $this->latitude,
+            'longitude'     => $this->longitude,
             'is_approved'   => $this->is_approved,
             'is_open'       => $this->is_open,
             'rating'        => $this->rating,

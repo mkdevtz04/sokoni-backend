@@ -34,6 +34,14 @@ class OrderResource extends JsonResource
                 'name'  => trim(($this->user->first_name ?? '') . ' ' . ($this->user->last_name ?? '')),
                 'phone' => $this->user->phone,
             ]),
+            'driver'            => $this->when(
+                $this->relationLoaded('driver') && $this->driver && $this->driver->user,
+                fn () => [
+                    'id'    => $this->driver->id,
+                    'name'  => trim(($this->driver->user->first_name ?? '') . ' ' . ($this->driver->user->last_name ?? '')),
+                    'phone' => $this->driver->user->phone,
+                ]
+            ),
         ];
     }
 }

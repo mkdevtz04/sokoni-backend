@@ -77,6 +77,42 @@ class PalmPesaService
         }
     }
 
+    /**
+     * Check the current status of a payment by its PalmPesa order_id reference.
+     * Returns 'COMPLETED' | 'FAILED' | 'PENDING' | null (unknown/error).
+     */
+    public function checkStatus(string $reference): ?string
+    {
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiToken,
+                'Accept'        => 'application/json',
+            ])->withoutVerifying()->get($this->baseUrl . '/api/palmpesa/orders/' . $reference);
+
+            if (! $response->successful()) {
+                Log::warning('PalmPesa status check failed', [
+                    'reference' => $reference,
+                    'status'    => $response->status(),
+                ]);
+                return null;
+            }
+
+            $body = $response->json();
+            Log::info('PalmPesa status check', ['reference' => $reference, 'body' => $body]);
+
+            // Normalise whatever field the API returns
+            $status = strtoupper(
+                $body['payment_status'] ?? $body['status'] ?? $body['transaction_status'] ?? ''
+            );
+
+            return $status ?: null;
+
+        } catch (\Throwable $e) {
+            Log::error('PalmPesa status check exception', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
     public function commissionPercent(): float
     {
         return $this->commissionPercent;

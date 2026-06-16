@@ -58,6 +58,45 @@ class PaymentController extends Controller
         return response()->json(['message' => 'ok']);
     }
 
+    /**
+     * App-triggered status check — called when webhook can't reach local dev server.
+     * Route: POST /api/orders/{order}/verify-payment  (auth required)
+     */
+    public function verifyPayment(Request $request, Order $order): JsonResponse
+    {
+        if ($order->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        if ($order->payment_status === 'paid') {
+            return response()->json(['message' => 'already_paid', 'payment_status' => 'paid']);
+        }
+
+        $payment = Payment::where('order_id', $order->id)
+            ->where('method', 'mobile_money')
+            ->latest()
+            ->first();
+
+        if (! $payment || ! $payment->reference) {
+            return response()->json(['message' => 'no_reference', 'payment_status' => $order->payment_status]);
+        }
+
+        $status = $this->palmpesa->checkStatus($payment->reference);
+
+        if ($status === 'COMPLETED') {
+            $this->handleCompleted($payment, ['verified_by' => 'app_poll']);
+            $order->refresh();
+            return response()->json(['message' => 'paid', 'payment_status' => $order->payment_status]);
+        }
+
+        if (in_array($status, ['FAILED', 'CANCELLED'])) {
+            $this->handleFailed($payment, ['verified_by' => 'app_poll']);
+            return response()->json(['message' => 'failed', 'payment_status' => 'failed']);
+        }
+
+        return response()->json(['message' => 'pending', 'payment_status' => 'pending']);
+    }
+
     private function handleCompleted(Payment $payment, array $data): void
     {
         if ($payment->status === 'completed') {

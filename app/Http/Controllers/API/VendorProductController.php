@@ -44,21 +44,25 @@ class VendorProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'is_active'   => 'boolean',
             'is_featured' => 'boolean',
-            'image'       => 'required|image|max:5120',
+            'images'      => 'required|array|min:1|max:6',
+            'images.*'    => 'image|max:5120',
         ]);
 
-        $imagePath = $request->file('image')->store('products', 'public');
-        unset($data['image']);
+        $images = $request->file('images');
+        unset($data['images']);
 
         $data['vendor_id'] = $this->vendorId($request);
         $data['slug']      = Str::slug($data['name']) . '-' . Str::random(6);
 
         $product = Product::create($data);
-        $product->images()->create([
-            'image_path' => $imagePath,
-            'is_primary' => true,
-            'sort_order' => 0,
-        ]);
+        foreach ($images as $index => $file) {
+            $imagePath = $file->store('products', 'public');
+            $product->images()->create([
+                'image_path' => $imagePath,
+                'is_primary' => $index === 0,
+                'sort_order' => $index,
+            ]);
+        }
         $product->load(['images', 'category']);
 
         return response()->json([
@@ -94,9 +98,23 @@ class VendorProductController extends Controller
             $imagePath = $request->file('image')->store('products', 'public');
             $product->images()->create([
                 'image_path' => $imagePath,
-                'is_primary' => true,
+                'is_primary' => $product->images()->count() === 0,
                 'sort_order' => 0,
             ]);
+        }
+
+        if ($request->hasFile('new_images')) {
+            $existingCount = $product->images()->count();
+            foreach ($request->file('new_images') as $index => $file) {
+                if ($existingCount >= 6) break;
+                $imagePath = $file->store('products', 'public');
+                $product->images()->create([
+                    'image_path' => $imagePath,
+                    'is_primary' => $existingCount === 0 && $index === 0,
+                    'sort_order' => $existingCount + $index,
+                ]);
+                $existingCount++;
+            }
         }
 
         unset($data['image']);
@@ -124,6 +142,22 @@ class VendorProductController extends Controller
         $product->forceDelete(); // hard delete — order items already snapshot name/price
 
         return response()->json(['message' => 'Product deleted.']);
+    }
+
+    public function deleteImage(Request $request, Product $product, int $imageId): JsonResponse
+    {
+        $this->authorizeProduct($request, $product);
+
+        $image = $product->images()->findOrFail($imageId);
+        Storage::disk('public')->delete($image->image_path);
+        $wasPrimary = (bool) $image->is_primary;
+        $image->delete();
+
+        if ($wasPrimary && $product->images()->count() > 0) {
+            $product->images()->orderBy('sort_order')->first()->update(['is_primary' => true]);
+        }
+
+        return response()->json(['message' => 'Image removed.']);
     }
 
     private function ensureApprovedVendor(Request $request): void

@@ -74,7 +74,7 @@ class FcmService
             $response = Http::withHeaders([
                 'Authorization' => 'key=' . $this->serverKey,
                 'Content-Type'  => 'application/json',
-            ])->post($this->fcmUrl, $payload);
+            ])->withoutVerifying()->post($this->fcmUrl, $payload);
 
             if (! $response->successful()) {
                 Log::warning('FCM send failed', [

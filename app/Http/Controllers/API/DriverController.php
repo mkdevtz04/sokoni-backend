@@ -209,6 +209,8 @@ class DriverController extends Controller
                 'name'  => $o->user->full_name,
                 'phone' => $o->user->phone,
             ] : null,
+            'customer_latitude'  => $o->customer_latitude,
+            'customer_longitude' => $o->customer_longitude,
             'items_count' => $o->items?->count() ?? 0,
         ];
     }
