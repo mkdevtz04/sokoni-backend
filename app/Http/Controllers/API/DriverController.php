@@ -46,7 +46,7 @@ class DriverController extends Controller
         $driver = $this->driver($request);
         if (! $driver) return response()->json(['data' => []]);
 
-        $orders = Order::with(['vendorProfile', 'deliveryAddress'])
+        $orders = Order::with(['vendorProfile', 'vendor', 'deliveryAddress', 'user'])
             ->where('driver_id', $driver->id)
             ->where('status', 'delivered')
             ->latest()
@@ -79,7 +79,7 @@ class DriverController extends Controller
     /** Deliveries available to accept (status = ready, no driver assigned) */
     public function available(Request $request): JsonResponse
     {
-        $orders = Order::with(['vendorProfile', 'deliveryAddress', 'items'])
+        $orders = Order::with(['vendorProfile', 'vendor', 'deliveryAddress', 'items'])
             ->where('status', 'ready')
             ->whereNull('driver_id')
             ->latest()
@@ -94,7 +94,7 @@ class DriverController extends Controller
         $driver = $this->driver($request);
         if (! $driver) return response()->json(['data' => []]);
 
-        $orders = Order::with(['vendorProfile', 'deliveryAddress', 'user', 'items'])
+        $orders = Order::with(['vendorProfile', 'vendor', 'deliveryAddress', 'user', 'items'])
             ->where('driver_id', $driver->id)
             ->whereIn('status', ['out_for_delivery', 'ready'])
             ->latest()
@@ -119,14 +119,14 @@ class DriverController extends Controller
             'out_for_delivery_at' => now(),
         ]);
 
-        FcmService::notifyUser(
+        app(FcmService::class)->notifyUser(
             $order->user_id,
             '🚗 Order On the Way',
             "Your order #{$order->order_number} has been picked up and is on its way.",
             ['type' => 'order_status', 'order_id' => (string) $order->id, 'status' => 'out_for_delivery']
         );
 
-        return response()->json(['data' => $this->formatOrder($order->fresh(['vendorProfile', 'deliveryAddress']))]);
+        return response()->json(['data' => $this->formatOrder($order->fresh(['vendorProfile', 'vendor', 'deliveryAddress', 'user']))]);
     }
 
     /** Update delivery status (out_for_delivery → delivered) */
@@ -148,14 +148,14 @@ class DriverController extends Controller
 
         $driver->increment('total_deliveries');
 
-        FcmService::notifyUser(
+        app(FcmService::class)->notifyUser(
             $order->user_id,
             '✅ Order Delivered',
             "Your order #{$order->order_number} has been delivered. Enjoy!",
             ['type' => 'order_status', 'order_id' => (string) $order->id, 'status' => 'delivered']
         );
 
-        return response()->json(['data' => $this->formatOrder($order->fresh(['vendorProfile', 'deliveryAddress']))]);
+        return response()->json(['data' => $this->formatOrder($order->fresh(['vendorProfile', 'vendor', 'deliveryAddress', 'user']))]);
     }
 
     /** Update driver's GPS coordinates */
@@ -190,12 +190,17 @@ class DriverController extends Controller
             'order_number' => $o->order_number,
             'status'       => $o->status,
             'total'        => $o->total,
+            'delivery_fee' => $o->delivery_fee,
             'delivery_note'=> $o->delivery_note,
             'created_at'   => $o->created_at?->toIso8601String(),
+            'delivered_at' => $o->delivered_at?->toIso8601String(),
             'vendor'       => $o->vendorProfile ? [
                 'id'            => $o->vendorProfile->id,
                 'business_name' => $o->vendorProfile->business_name,
                 'region'        => $o->vendorProfile->region,
+                'phone'         => $o->vendorProfile->phone ?? $o->vendor?->phone,
+                'latitude'      => $o->vendorProfile->latitude,
+                'longitude'     => $o->vendorProfile->longitude,
             ] : null,
             'delivery_address' => $o->deliveryAddress ? [
                 'label'    => $o->deliveryAddress->label,

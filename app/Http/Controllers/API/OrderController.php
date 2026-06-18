@@ -71,9 +71,13 @@ class OrderController extends Controller
             $subtotal    = $vendorItems->sum(fn ($i) => $i->price * $i->quantity);
             $deliveryFee = $this->calcDeliveryFee(
                 (int) $request->vendor_id,
-                $request->delivery_address_id
+                $request->delivery_address_id,
+                $request->customer_latitude  ? (float) $request->customer_latitude  : null,
+                $request->customer_longitude ? (float) $request->customer_longitude : null,
             );
-            $total       = $subtotal + $deliveryFee;
+            // Delivery fee is always paid in cash to the driver on arrival.
+            // The product payment (wallet/M-Pesa/cash) covers only the subtotal.
+            $total       = $subtotal;
 
             if ($request->payment_method === 'wallet') {
                 $wallet = $request->user()->getOrCreateWallet();
@@ -194,19 +198,41 @@ class OrderController extends Controller
         ]);
     }
 
-    private function calcDeliveryFee(int $vendorId, ?int $addressId): int
-    {
+    private function calcDeliveryFee(
+        int $vendorId,
+        ?int $addressId,
+        ?float $fallbackLat = null,
+        ?float $fallbackLng = null,
+    ): int {
         $vendor = VendorProfile::where('user_id', $vendorId)->first();
-        if (!$vendor || !$vendor->latitude || !$vendor->longitude || !$addressId) {
+        if (!$vendor || !$vendor->latitude || !$vendor->longitude) {
             return 0;
         }
-        $address = UserAddress::find($addressId);
-        if (!$address || !$address->latitude || !$address->longitude) {
+
+        // Prefer saved address coordinates; fall back to customer GPS captured at checkout
+        $lat = null;
+        $lng = null;
+
+        if ($addressId) {
+            $address = UserAddress::find($addressId);
+            if ($address && $address->latitude && $address->longitude) {
+                $lat = (float) $address->latitude;
+                $lng = (float) $address->longitude;
+            }
+        }
+
+        if ($lat === null && $fallbackLat !== null && $fallbackLng !== null) {
+            $lat = $fallbackLat;
+            $lng = $fallbackLng;
+        }
+
+        if ($lat === null) {
             return 0;
         }
+
         $distance = $this->haversineKm(
             (float)$vendor->latitude, (float)$vendor->longitude,
-            (float)$address->latitude, (float)$address->longitude
+            $lat, $lng
         );
         return $this->feeFromKm($distance);
     }
