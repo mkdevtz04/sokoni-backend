@@ -68,7 +68,12 @@ class Categories extends Component
 
         $iconPath = $this->existingIcon;
         if ($this->icon) {
-            $iconPath = $this->icon->store('categories', 'public');
+            $stored = $this->icon->store('categories', 'public');
+            if ($stored === false) {
+                $this->addError('icon', 'Image could not be saved. Check server storage permissions.');
+                return;
+            }
+            $iconPath = $stored;
         }
 
         $data = [
@@ -76,7 +81,7 @@ class Categories extends Component
             'slug'        => Str::slug($this->name),
             'description' => $this->description ?: null,
             'sort_order'  => $this->sortOrder,
-            'icon'        => $iconPath,
+            'icon'        => $iconPath ?: null,
         ];
 
         if ($this->editingId) {
