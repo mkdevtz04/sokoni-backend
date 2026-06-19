@@ -13,6 +13,7 @@ use App\Http\Controllers\API\VendorProfileController;
 use App\Http\Controllers\API\VendorProductController;
 use App\Http\Controllers\API\VendorOrderController;
 use App\Http\Controllers\API\DeviceTokenController;
+use App\Http\Controllers\API\ChatController;
 use App\Http\Controllers\API\DriverController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\UserAddressController;
@@ -131,6 +132,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('deliveries/{order}/accept',        [DriverController::class, 'accept']);
         Route::put('deliveries/{order}/status',         [DriverController::class, 'updateStatus']);
         Route::post('location',                         [DriverController::class, 'updateLocation']);
+    });
+
+    // Chat (Buyer ↔ Vendor)
+    Route::prefix('chat')->group(function () {
+        Route::get('sessions',                          [ChatController::class, 'sessions']);
+        Route::post('sessions',                         [ChatController::class, 'getOrCreate']);
+        Route::get('sessions/{session}/messages',       [ChatController::class, 'messages']);
+        Route::post('sessions/{session}/messages',      [ChatController::class, 'send']);
+        Route::post('sessions/{session}/read',          [ChatController::class, 'markRead']);
     });
 
     // Vendor application & profile
