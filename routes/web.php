@@ -20,7 +20,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // ── Admin panel (protected) ───────────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::get('/',          fn () => redirect()->route('admin.dashboard'));
-    Route::get('dashboard',  \App\Livewire\Admin\Dashboard::class)->name('dashboard');
+    Route::get('dashboard',   \App\Livewire\Admin\Dashboard::class)->name('dashboard');
+    Route::get('categories', \App\Livewire\Admin\Categories::class)->name('categories');
     Route::get('vendors',    \App\Livewire\Admin\Vendors::class)->name('vendors');
     Route::get('users',      \App\Livewire\Admin\Users::class)->name('users');
     Route::get('products',   \App\Livewire\Admin\Products::class)->name('products');
