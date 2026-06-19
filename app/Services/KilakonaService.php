@@ -14,10 +14,15 @@ class KilakonaService
 
     public function __construct()
     {
-        $this->apiKey    = env('KILAKONA_API_KEY');
-        $this->apiSecret = env('KILAKONA_API_SECRET');
-        $this->senderId  = env('KILAKONA_SENDER_ID', 'SOKONI');
-        $this->baseUrl   = env('KILAKONA_BASE_URL');
+        $this->apiKey    = config('services.kilakona.api_key',    '');
+        $this->apiSecret = config('services.kilakona.api_secret', '');
+        $this->senderId  = config('services.kilakona.sender_id',  'SOKONI');
+        $this->baseUrl   = config('services.kilakona.base_url',   '');
+    }
+
+    public function isConfigured(): bool
+    {
+        return $this->apiKey !== '' && $this->apiSecret !== '' && $this->baseUrl !== '';
     }
 
     /**
@@ -29,6 +34,12 @@ class KilakonaService
      */
     public function send(string|array $phone, string $message): bool
     {
+        if (! $this->isConfigured()) {
+            throw new \RuntimeException(
+                'SMS service not configured. Add KILAKONA_API_KEY, KILAKONA_API_SECRET, and KILAKONA_BASE_URL to your .env file.'
+            );
+        }
+
         $contacts = is_array($phone)
             ? implode(',', array_map([$this, 'formatPhone'], $phone))
             : $this->formatPhone($phone);

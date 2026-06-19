@@ -39,6 +39,13 @@ return [
         'server_key' => env('FCM_SERVER_KEY'),
     ],
 
+    'kilakona' => [
+        'api_key'   => env('KILAKONA_API_KEY',    ''),
+        'api_secret'=> env('KILAKONA_API_SECRET', ''),
+        'sender_id' => env('KILAKONA_SENDER_ID',  'SOKONI'),
+        'base_url'  => env('KILAKONA_BASE_URL',   ''),
+    ],
+
     'palmpesa' => [
         'api_token'          => env('PALMPESA_API_TOKEN'),
         'user_id'            => env('PALMPESA_USER_ID'),
