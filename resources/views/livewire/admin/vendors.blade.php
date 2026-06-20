@@ -16,15 +16,15 @@
     <!-- Table -->
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[640px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left">Business</th>
-                        <th class="px-5 py-3 text-left">Owner</th>
-                        <th class="px-5 py-3 text-left">Region</th>
-                        <th class="px-5 py-3 text-left">Rating</th>
-                        <th class="px-5 py-3 text-left">Status</th>
-                        <th class="px-5 py-3 text-left">Actions</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Business</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Owner</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Region</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Rating</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">

@@ -37,15 +37,15 @@
     {{-- Table --}}
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[640px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left">Applicant</th>
-                        <th class="px-5 py-3 text-left">ID Number</th>
-                        <th class="px-5 py-3 text-left">Documents</th>
-                        <th class="px-5 py-3 text-left">Status</th>
-                        <th class="px-5 py-3 text-left">Applied</th>
-                        <th class="px-5 py-3 text-left">Actions</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Applicant</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">ID Number</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Documents</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Applied</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">

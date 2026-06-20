@@ -1,6 +1,6 @@
 <div>
-    <!-- Stats grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+    {{-- Stats grid --}}
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4 mb-6">
         @php
             $cards = [
                 ['label' => 'Customers',    'value' => $totalUsers,    'color' => 'blue',   'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
@@ -14,52 +14,52 @@
         @endphp
 
         @foreach ($cards as $card)
-        <div class="bg-white rounded-2xl p-4 shadow-sm">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center {{ $colorMap[$card['color']] }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-white rounded-2xl p-3 sm:p-4 shadow-sm">
+            <div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 {{ $colorMap[$card['color']] }}">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $card['icon'] }}"/>
                     </svg>
                 </div>
             </div>
-            <p class="text-2xl font-bold text-gray-800">{{ $card['value'] }}</p>
+            <p class="text-lg sm:text-xl font-bold text-gray-800 leading-tight break-words">{{ $card['value'] }}</p>
             <p class="text-xs text-gray-500 mt-0.5">{{ $card['label'] }}</p>
         </div>
         @endforeach
     </div>
 
-    <!-- Recent orders -->
+    {{-- Recent orders --}}
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h2 class="font-semibold text-gray-800">Recent Orders</h2>
+        <div class="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100">
+            <h2 class="font-semibold text-gray-800 text-sm sm:text-base">Recent Orders</h2>
             <a href="{{ route('admin.orders') }}" class="text-sm text-primary hover:underline">View all</a>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[560px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left">Order #</th>
-                        <th class="px-5 py-3 text-left">Customer</th>
-                        <th class="px-5 py-3 text-left">Vendor</th>
-                        <th class="px-5 py-3 text-left">Status</th>
-                        <th class="px-5 py-3 text-right">Total</th>
+                        <th class="px-4 sm:px-5 py-3 text-left whitespace-nowrap">Order #</th>
+                        <th class="px-4 sm:px-5 py-3 text-left whitespace-nowrap">Customer</th>
+                        <th class="px-4 sm:px-5 py-3 text-left whitespace-nowrap">Vendor</th>
+                        <th class="px-4 sm:px-5 py-3 text-left whitespace-nowrap">Status</th>
+                        <th class="px-4 sm:px-5 py-3 text-right whitespace-nowrap">Total</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                     @forelse ($recentOrders as $order)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-3 font-medium text-gray-800">{{ $order['order_number'] }}</td>
-                        <td class="px-5 py-3 text-gray-600">{{ $order['user']['first_name'] ?? '-' }} {{ $order['user']['last_name'] ?? '' }}</td>
-                        <td class="px-5 py-3 text-gray-600">{{ $order['vendor_profile']['business_name'] ?? '-' }}</td>
-                        <td class="px-5 py-3">
+                        <td class="px-4 sm:px-5 py-3 font-medium text-gray-800 whitespace-nowrap">{{ $order['order_number'] }}</td>
+                        <td class="px-4 sm:px-5 py-3 text-gray-600 whitespace-nowrap">{{ $order['user']['first_name'] ?? '-' }} {{ $order['user']['last_name'] ?? '' }}</td>
+                        <td class="px-4 sm:px-5 py-3 text-gray-600">{{ $order['vendor_profile']['business_name'] ?? '-' }}</td>
+                        <td class="px-4 sm:px-5 py-3">
                             @php
                                 $sc = ['pending'=>'bg-yellow-100 text-yellow-700','confirmed'=>'bg-blue-100 text-blue-700','preparing'=>'bg-purple-100 text-purple-700','ready'=>'bg-teal-100 text-teal-700','out_for_delivery'=>'bg-green-100 text-green-700','delivered'=>'bg-green-100 text-green-800','cancelled'=>'bg-red-100 text-red-700','refunded'=>'bg-gray-100 text-gray-600'];
                             @endphp
-                            <span class="px-2.5 py-1 rounded-full text-xs font-medium {{ $sc[$order['status']] ?? 'bg-gray-100 text-gray-600' }}">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap {{ $sc[$order['status']] ?? 'bg-gray-100 text-gray-600' }}">
                                 {{ ucfirst(str_replace('_', ' ', $order['status'])) }}
                             </span>
                         </td>
-                        <td class="px-5 py-3 text-right font-semibold text-gray-800">TZS {{ number_format($order['total']) }}</td>
+                        <td class="px-4 sm:px-5 py-3 text-right font-semibold text-gray-800 whitespace-nowrap">TZS {{ number_format($order['total']) }}</td>
                     </tr>
                     @empty
                     <tr><td colspan="5" class="px-5 py-8 text-center text-gray-400">No orders yet</td></tr>

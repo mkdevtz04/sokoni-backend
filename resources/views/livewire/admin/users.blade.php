@@ -16,15 +16,15 @@
 
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[620px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left">User</th>
-                        <th class="px-5 py-3 text-left">Phone</th>
-                        <th class="px-5 py-3 text-left">Role</th>
-                        <th class="px-5 py-3 text-left">Status</th>
-                        <th class="px-5 py-3 text-left">Joined</th>
-                        <th class="px-5 py-3 text-left">Action</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">User</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Phone</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Role</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Joined</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">

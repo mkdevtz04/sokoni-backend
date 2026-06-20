@@ -1,25 +1,25 @@
 <div>
     <!-- Stats row -->
-    <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
         <div class="bg-white rounded-2xl p-4 shadow-sm">
             <p class="text-xs text-gray-500 mb-1">Pending Requests</p>
-            <p class="text-2xl font-bold text-yellow-600">{{ $stats['pending'] }}</p>
+            <p class="text-xl sm:text-2xl font-bold text-yellow-600">{{ $stats['pending'] }}</p>
         </div>
         <div class="bg-white rounded-2xl p-4 shadow-sm">
             <p class="text-xs text-gray-500 mb-1">Approved (to send)</p>
-            <p class="text-2xl font-bold text-blue-600">{{ $stats['approved'] }}</p>
+            <p class="text-xl sm:text-2xl font-bold text-blue-600">{{ $stats['approved'] }}</p>
         </div>
         <div class="bg-white rounded-2xl p-4 shadow-sm">
             <p class="text-xs text-gray-500 mb-1">Total Paid Out</p>
-            <p class="text-2xl font-bold text-green-600">TZS {{ number_format($stats['sent']) }}</p>
+            <p class="text-xl sm:text-2xl font-bold text-green-600 break-words">TZS {{ number_format($stats['sent']) }}</p>
         </div>
     </div>
 
     <!-- Filter tabs -->
-    <div class="flex gap-2 mb-5">
+    <div class="flex flex-wrap gap-2 mb-5">
         @foreach (['pending' => 'Pending', 'approved' => 'Approved', 'sent' => 'Sent', 'rejected' => 'Rejected'] as $val => $label)
             <button wire:click="$set('filter', '{{ $val }}')"
-                class="px-4 py-2 rounded-xl text-sm font-medium transition-colors
+                class="px-4 py-2 rounded-xl text-sm font-medium transition-colors min-h-[40px]
                        {{ $filter === $val ? 'bg-primary text-white' : 'bg-white text-gray-500 hover:bg-gray-50' }}">
                 {{ $label }}
             </button>
@@ -52,16 +52,16 @@
     <!-- Table -->
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[700px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left">Vendor</th>
-                        <th class="px-5 py-3 text-left">M-Pesa Phone</th>
-                        <th class="px-5 py-3 text-right">Amount</th>
-                        <th class="px-5 py-3 text-left">Status</th>
-                        <th class="px-5 py-3 text-left">Requested</th>
-                        <th class="px-5 py-3 text-left">Note</th>
-                        <th class="px-5 py-3 text-left">Actions</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Vendor</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">M-Pesa Phone</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">Amount</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Requested</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Note</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">

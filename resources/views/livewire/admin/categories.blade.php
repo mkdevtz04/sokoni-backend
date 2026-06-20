@@ -26,15 +26,15 @@
     {{-- ── Table ──────────────────────────────────────────────────────────── --}}
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[580px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left w-8">Order</th>
-                        <th class="px-5 py-3 text-left">Category</th>
-                        <th class="px-5 py-3 text-left">Description</th>
-                        <th class="px-5 py-3 text-left">Products</th>
-                        <th class="px-5 py-3 text-left">Status</th>
-                        <th class="px-5 py-3 text-left">Actions</th>
+                        <th class="px-5 py-3 text-left w-8 whitespace-nowrap">Order</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Category</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Description</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Products</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">

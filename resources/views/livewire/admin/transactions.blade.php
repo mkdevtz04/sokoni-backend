@@ -31,46 +31,49 @@
     </div>
 
     {{-- ── Filters ── --}}
-    <div class="flex flex-col sm:flex-row gap-3 mb-5">
-        <input wire:model.live.debounce.300ms="search" type="text"
-            placeholder="Search order number or vendor..."
-            class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+    <div class="flex flex-col gap-3 mb-5">
+        <div class="flex flex-col sm:flex-row gap-3">
+            <input wire:model.live.debounce.300ms="search" type="text"
+                placeholder="Search order number or vendor..."
+                class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
 
-        <select wire:model.live="filter"
-            class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-            <option value="all">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="settled">Settled</option>
-            <option value="withdrawn">Withdrawn</option>
-        </select>
+            <select wire:model.live="filter"
+                class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="settled">Settled</option>
+                <option value="withdrawn">Withdrawn</option>
+            </select>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+            <input wire:model.live="dateFrom" type="date"
+                class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            <input wire:model.live="dateTo" type="date"
+                class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
 
-        <input wire:model.live="dateFrom" type="date"
-            class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-        <input wire:model.live="dateTo" type="date"
-            class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-
-        @if ($search || $filter !== 'all' || $dateFrom || $dateTo)
-            <button wire:click="clearFilters"
-                class="px-4 py-2.5 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors whitespace-nowrap">
-                Clear filters
-            </button>
-        @endif
+            @if ($search || $filter !== 'all' || $dateFrom || $dateTo)
+                <button wire:click="clearFilters"
+                    class="px-4 py-2.5 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors whitespace-nowrap">
+                    Clear filters
+                </button>
+            @endif
+        </div>
     </div>
 
     {{-- ── Table ── --}}
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[800px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left">Order</th>
-                        <th class="px-5 py-3 text-left">Vendor</th>
-                        <th class="px-5 py-3 text-left">Customer</th>
-                        <th class="px-5 py-3 text-right">Gross</th>
-                        <th class="px-5 py-3 text-right">Commission</th>
-                        <th class="px-5 py-3 text-right">Net to Vendor</th>
-                        <th class="px-5 py-3 text-left">Status</th>
-                        <th class="px-5 py-3 text-left">Date</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Order</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Vendor</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Customer</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">Gross</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">Commission</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">Net to Vendor</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Date</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">

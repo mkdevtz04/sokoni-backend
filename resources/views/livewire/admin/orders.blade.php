@@ -16,17 +16,17 @@
 
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[780px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left">Order #</th>
-                        <th class="px-5 py-3 text-left">Customer</th>
-                        <th class="px-5 py-3 text-left">Vendor</th>
-                        <th class="px-5 py-3 text-left">Status</th>
-                        <th class="px-5 py-3 text-left">Payment</th>
-                        <th class="px-5 py-3 text-right">Total</th>
-                        <th class="px-5 py-3 text-left">Date</th>
-                        <th class="px-5 py-3 text-left">Action</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Order #</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Customer</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Vendor</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Payment</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">Total</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Date</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">

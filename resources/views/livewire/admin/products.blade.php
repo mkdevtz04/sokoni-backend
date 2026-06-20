@@ -8,17 +8,17 @@
 
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm min-w-[720px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left">Product</th>
-                        <th class="px-5 py-3 text-left">Vendor</th>
-                        <th class="px-5 py-3 text-left">Category</th>
-                        <th class="px-5 py-3 text-right">Price</th>
-                        <th class="px-5 py-3 text-center">Stock</th>
-                        <th class="px-5 py-3 text-center">Active</th>
-                        <th class="px-5 py-3 text-center">Featured</th>
-                        <th class="px-5 py-3 text-center">Delete</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Product</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Vendor</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">Category</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">Price</th>
+                        <th class="px-5 py-3 text-center whitespace-nowrap">Stock</th>
+                        <th class="px-5 py-3 text-center whitespace-nowrap">Active</th>
+                        <th class="px-5 py-3 text-center whitespace-nowrap">Featured</th>
+                        <th class="px-5 py-3 text-center whitespace-nowrap">Delete</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
