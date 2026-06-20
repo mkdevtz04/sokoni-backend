@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\Driver;
 use App\Models\DriverApplication;
 use App\Models\User;
+use App\Services\FcmService;
 use App\Services\KilakonaService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -126,6 +127,21 @@ class Drivers extends Component
                 );
             } catch (\Throwable $e) {
                 Log::error('Driver approval SMS failed', ['error' => $e->getMessage()]);
+            }
+
+            // FCM push to the approved driver (best-effort, outside transaction)
+            try {
+                $driverUser = User::where('phone', $application->phone)->first();
+                if ($driverUser) {
+                    app(FcmService::class)->notifyUser(
+                        userId: $driverUser->id,
+                        title:  '✅ Driver Account Approved!',
+                        body:   "Welcome to Sokoni, {$application->full_name}! Your driver account is now active. Log in with your phone number and the password sent via SMS.",
+                        data:   ['type' => 'driver_approved'],
+                    );
+                }
+            } catch (\Throwable $e) {
+                Log::error('Driver approval FCM failed', ['error' => $e->getMessage()]);
             }
 
             $this->successMessage = "Driver {$application->full_name} approved. Login credentials sent via SMS.";

@@ -11,10 +11,12 @@ use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\VendorProfile;
+use App\Services\KilakonaService;
 use App\Services\OtpService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -40,6 +42,18 @@ class AuthController extends Controller
                 'region'        => $request->region,
                 'is_approved'   => false,
             ]);
+
+            // Notify vendor to wait for admin approval
+            try {
+                (new KilakonaService())->send(
+                    $user->phone,
+                    "Asante {$user->first_name}! Ombi lako la kuwa muuzaji kwa \"{$request->business_name}\" limepokelewa. " .
+                    "Tafadhali subiri hadi dakika 10 hadi admin akikagua na kukuidhinisha akaunti yako. " .
+                    "Utapata ujumbe mwingine ukikubaliwa."
+                );
+            } catch (\Throwable $e) {
+                Log::error('Vendor registration SMS failed', ['error' => $e->getMessage()]);
+            }
         }
 
         $this->otpService->generate($user, 'phone');

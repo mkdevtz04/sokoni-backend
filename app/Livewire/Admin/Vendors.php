@@ -3,6 +3,9 @@
 namespace App\Livewire\Admin;
 
 use App\Models\VendorProfile;
+use App\Services\FcmService;
+use App\Services\KilakonaService;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -25,6 +28,32 @@ class Vendors extends Component
         $vendor = VendorProfile::with('user')->findOrFail($id);
         $vendor->update(['is_approved' => true]);
         $vendor->user?->update(['role' => 'vendor']);
+
+        if ($vendor->user) {
+            // SMS to registered phone
+            try {
+                (new KilakonaService())->send(
+                    $vendor->user->phone,
+                    "Hongera {$vendor->user->first_name}! Ombi lako la muuzaji kwa \"{$vendor->business_name}\" limekubaliwa. " .
+                    "Sasa unaweza kuanza kuuza kwenye Sokoni. Ingia kwenye programu kuanza."
+                );
+            } catch (\Throwable $e) {
+                Log::error('Vendor approval SMS failed', ['error' => $e->getMessage()]);
+            }
+
+            // FCM push notification
+            try {
+                app(FcmService::class)->notifyUser(
+                    userId: $vendor->user->id,
+                    title:  '✅ Application Approved!',
+                    body:   "Congratulations! Your vendor application for \"{$vendor->business_name}\" has been approved. You can now start selling on Sokoni.",
+                    data:   ['type' => 'vendor_approved'],
+                );
+            } catch (\Throwable $e) {
+                Log::error('Vendor approval FCM failed', ['error' => $e->getMessage()]);
+            }
+        }
+
         session()->flash('success', 'Vendor approved.');
     }
 

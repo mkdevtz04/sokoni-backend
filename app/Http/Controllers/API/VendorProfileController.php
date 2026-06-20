@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\VendorResource;
 use App\Models\VendorProfile;
+use App\Services\KilakonaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class VendorProfileController extends Controller
@@ -47,6 +49,19 @@ class VendorProfileController extends Controller
             'is_open'     => false,
             'rating'      => 0,
         ]));
+
+        // Notify vendor via SMS to wait for admin approval
+        try {
+            $user = $request->user();
+            (new KilakonaService())->send(
+                $user->phone,
+                "Asante {$user->first_name}! Ombi lako la kuwa muuzaji kwa \"{$vendor->business_name}\" limepokelewa. " .
+                "Tafadhali subiri hadi dakika 10 hadi admin akikagua na kukuidhinisha akaunti yako. " .
+                "Utapata ujumbe mwingine ukikubaliwa."
+            );
+        } catch (\Throwable $e) {
+            Log::error('Vendor application SMS failed', ['error' => $e->getMessage()]);
+        }
 
         return response()->json([
             'message' => 'Application submitted. Awaiting admin approval.',

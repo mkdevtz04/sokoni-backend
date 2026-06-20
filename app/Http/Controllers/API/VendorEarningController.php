@@ -65,7 +65,7 @@ class VendorEarningController extends Controller
     {
         $request->validate([
             'phone'  => ['required', 'string'],
-            'amount' => ['required', 'numeric', 'min:1000'],
+            'amount' => ['required', 'numeric', 'min:50000'],
         ]);
 
         $vendorId = $request->user()->id;

@@ -50,7 +50,7 @@ return [
         'api_token'          => env('PALMPESA_API_TOKEN'),
         'user_id'            => env('PALMPESA_USER_ID'),
         'base_url'           => env('PALMPESA_BASE_URL', 'https://palmpesa.drmlelwa.co.tz'),
-        'commission_percent' => env('PLATFORM_COMMISSION_PERCENT', 5),
+        'commission_percent' => env('PLATFORM_COMMISSION_PERCENT', 10),
     ],
 
 ];
