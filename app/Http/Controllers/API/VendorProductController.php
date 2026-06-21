@@ -4,9 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\VendorProfile;
+use App\Services\FcmService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -64,6 +68,25 @@ class VendorProductController extends Controller
             ]);
         }
         $product->load(['images', 'category']);
+
+        // Notify past customers of this vendor about the new product
+        try {
+            $shopName    = VendorProfile::where('user_id', $product->vendor_id)->value('business_name') ?? 'A vendor';
+            $customerIds = Order::where('vendor_id', $product->vendor_id)
+                ->distinct()
+                ->pluck('user_id');
+
+            foreach ($customerIds as $customerId) {
+                app(FcmService::class)->notifyUser(
+                    userId: $customerId,
+                    title:  "🆕 New from {$shopName}",
+                    body:   "{$product->name} is now available",
+                    data:   ['type' => 'new_product', 'product_id' => (string) $product->id],
+                );
+            }
+        } catch (\Throwable $e) {
+            Log::error('New product notification failed', ['error' => $e->getMessage()]);
+        }
 
         return response()->json([
             'message' => 'Product created.',

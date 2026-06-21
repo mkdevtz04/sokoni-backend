@@ -9,6 +9,7 @@ use App\Models\VendorProfile;
 use App\Services\FcmService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ChatController extends Controller
 {
@@ -147,11 +148,13 @@ class ChatController extends Controller
         return [
             'id'              => $s->id,
             'other_user'      => $other ? [
-                'id'         => $other->id,
-                'name'       => $other->full_name ?? $other->first_name,
-                'avatar'     => $other->profile_picture,
-                // For the vendor side, expose business name
-                'shop_name'  => $vendorProfile?->business_name,
+                'id'        => $other->id,
+                'name'      => $other->full_name ?? $other->first_name,
+                'avatar'    => $other->profile_picture,
+                // shop_name is only relevant when the other party is the vendor
+                // (i.e. the viewer is a customer). For a vendor viewing their
+                // customer list this must be null so the customer's name shows.
+                'shop_name' => $isVendor ? null : $vendorProfile?->business_name,
             ] : null,
             'last_message'    => $s->last_message,
             'last_message_at' => $s->last_message_at?->toIso8601String(),
