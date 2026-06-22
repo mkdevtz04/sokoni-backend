@@ -78,7 +78,7 @@ class VendorEarningController extends Controller
         }
 
         $available = VendorEarning::where('vendor_id', $vendorId)
-            ->where('status', 'pending')
+            ->where('status', 'settled')
             ->sum('net_amount');
 
         if ($request->amount > $available) {

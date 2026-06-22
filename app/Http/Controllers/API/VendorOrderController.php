@@ -7,6 +7,7 @@ use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\VendorEarning;
 use App\Services\FcmService;
+use App\Services\PalmPesaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -50,7 +51,11 @@ class VendorOrderController extends Controller
         }
         if ($data['status'] === 'delivered') {
             $order->update(['delivered_at' => now(), 'payment_status' => 'paid']);
-            $this->ensureEarningExists($order->fresh());
+            $fresh = $order->fresh();
+            $this->ensureEarningExists($fresh);
+            VendorEarning::where('order_id', $fresh->id)
+                ->where('status', 'pending')
+                ->update(['status' => 'settled']);
         }
 
         // Notify the customer about their order status change
@@ -81,7 +86,7 @@ class VendorOrderController extends Controller
         if (VendorEarning::where('order_id', $order->id)->exists()) {
             return;
         }
-        $pct        = (float) config('services.palmpesa.commission_percent', 5);
+        $pct        = app(PalmPesaService::class)->commissionPercent();
         $gross      = $order->subtotal;
         $commission = round($gross * ($pct / 100), 2);
 

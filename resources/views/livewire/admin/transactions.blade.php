@@ -10,7 +10,7 @@
         <div class="bg-white rounded-2xl shadow-sm p-5">
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Platform Revenue</p>
             <p class="text-xl font-bold text-primary">TZS {{ number_format($summary['commission_total']) }}</p>
-            <p class="text-xs text-gray-400 mt-1">After commission deduction</p>
+            <p class="text-xs text-gray-400 mt-1">10% of gross volume</p>
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-5">
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Vendor Payouts</p>
@@ -18,15 +18,11 @@
             <p class="text-xs text-gray-400 mt-1">Net to vendors</p>
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-5">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Avg Commission</p>
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Commission Rate</p>
             <p class="text-xl font-bold text-gray-800">
-                @if ($summary['gross_total'] > 0)
-                    {{ number_format(($summary['commission_total'] / $summary['gross_total']) * 100, 1) }}%
-                @else
-                    —
-                @endif
+                {{ config('services.palmpesa.commission_percent', 10) }}%
             </p>
-            <p class="text-xs text-gray-400 mt-1">Of gross volume</p>
+            <p class="text-xs text-gray-400 mt-1">Fixed platform rate</p>
         </div>
     </div>
 

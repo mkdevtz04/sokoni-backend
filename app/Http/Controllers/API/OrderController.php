@@ -257,7 +257,7 @@ class OrderController extends Controller
         if (VendorEarning::where('order_id', $order->id)->exists()) {
             return;
         }
-        $pct        = (float) config('services.palmpesa.commission_percent', 5);
+        $pct        = app(PalmPesaService::class)->commissionPercent();
         $gross      = $order->subtotal;
         $commission = round($gross * ($pct / 100), 2);
 
