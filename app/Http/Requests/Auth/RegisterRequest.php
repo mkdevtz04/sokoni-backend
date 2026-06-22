@@ -19,6 +19,8 @@ class RegisterRequest extends FormRequest
             'role'          => ['nullable', 'in:customer,vendor,driver'],
             'business_name' => ['required_if:role,vendor', 'nullable', 'string', 'max:200'],
             'region'        => ['required_if:role,vendor', 'nullable', 'string', 'max:100'],
+            'latitude'      => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude'     => ['nullable', 'numeric', 'between:-180,180'],
         ];
     }
 }

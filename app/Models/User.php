@@ -24,6 +24,8 @@ class User extends Authenticatable
         'profile_picture',
         'fcm_token',
         'profile_completed',
+        'latitude',
+        'longitude',
         'email_verified_at',
         'phone_verified_at',
     ];

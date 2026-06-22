@@ -33,6 +33,8 @@ class AuthController extends Controller
             'email'      => $request->email,
             'password'   => $request->password,
             'role'       => $role === 'vendor' ? 'customer' : $role, // starts as customer until approved
+            'latitude'   => $request->latitude,
+            'longitude'  => $request->longitude,
         ]);
 
         if ($role === 'vendor') {
