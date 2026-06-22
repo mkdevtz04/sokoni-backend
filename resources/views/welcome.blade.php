@@ -449,9 +449,9 @@
                 <h4 class="text-white font-semibold text-sm mb-4">Business</h4>
                 <ul class="space-y-3 text-sm">
                     <li><a href="{{ route('admin.login') }}" class="hover:text-primary transition-colors block py-0.5">Admin Panel</a></li>
-                    <li><a href="#vendors" class="hover:text-primary transition-colors block py-0.5">Vendor Portal</a></li>
-                    <li><a href="#"        class="hover:text-primary transition-colors block py-0.5">Privacy Policy</a></li>
-                    <li><a href="#"        class="hover:text-primary transition-colors block py-0.5">Terms of Service</a></li>
+                    <li><a href="#vendors"               class="hover:text-primary transition-colors block py-0.5">Vendor Portal</a></li>
+                    <li><a href="{{ route('privacy') }}" class="hover:text-primary transition-colors block py-0.5">Privacy Policy</a></li>
+                    <li><a href="{{ route('terms') }}"   class="hover:text-primary transition-colors block py-0.5">Terms of Service</a></li>
                 </ul>
             </div>
         </div>

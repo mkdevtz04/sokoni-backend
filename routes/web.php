@@ -10,6 +10,9 @@ Route::get('/', fn () => view('welcome'))->name('home');
 Route::get('become-driver',  [DriverApplicationController::class, 'show'])->name('become-driver');
 Route::post('become-driver', [DriverApplicationController::class, 'store'])->name('become-driver.store');
 
+Route::get('privacy',        fn () => view('privacy'))->name('privacy');
+Route::get('terms',          fn () => view('terms'))->name('terms');
+
 // ── Admin auth (guest) ────────────────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('login',  [AuthController::class, 'showLogin'])->name('login');
