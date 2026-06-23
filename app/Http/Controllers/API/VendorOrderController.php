@@ -60,12 +60,12 @@ class VendorOrderController extends Controller
 
         // Notify the customer about their order status change
         $statusMessages = [
-            'confirmed'        => ['title' => '✅ Order Confirmed',       'body' => "Your order #{$order->order_number} has been confirmed!"],
-            'preparing'        => ['title' => '👨‍🍳 Order Being Prepared',  'body' => "Your order #{$order->order_number} is being prepared."],
-            'ready'            => ['title' => '📦 Order Ready',           'body' => "Your order #{$order->order_number} is ready for pickup/delivery."],
-            'out_for_delivery' => ['title' => '🚴 Out for Delivery',      'body' => "Your order #{$order->order_number} is on its way!"],
-            'delivered'        => ['title' => '🎉 Order Delivered',       'body' => "Your order #{$order->order_number} has been delivered. Enjoy!"],
-            'cancelled'        => ['title' => '❌ Order Cancelled',       'body' => "Your order #{$order->order_number} has been cancelled."],
+            'confirmed'        => ['title' => '✅ Order Confirmed',       'body' => "Your order {$order->order_number} has been confirmed!"],
+            'preparing'        => ['title' => '👨‍🍳 Order Being Prepared',  'body' => "Your order {$order->order_number} is being prepared."],
+            'ready'            => ['title' => '📦 Order Ready',           'body' => "Your order {$order->order_number} is ready for pickup/delivery."],
+            'out_for_delivery' => ['title' => '🚴 Out for Delivery',      'body' => "Your order {$order->order_number} is on its way!"],
+            'delivered'        => ['title' => '🎉 Order Delivered',       'body' => "Your order {$order->order_number} has been delivered. Enjoy!"],
+            'cancelled'        => ['title' => '❌ Order Cancelled',       'body' => "Your order {$order->order_number} has been cancelled."],
         ];
 
         if (isset($statusMessages[$data['status']])) {

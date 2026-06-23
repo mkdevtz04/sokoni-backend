@@ -126,7 +126,7 @@ class PaymentController extends Controller
             app(FcmService::class)->notifyUser(
                 userId: $order->user_id,
                 title:  '✅ Payment Confirmed',
-                body:   "Payment for order #{$order->order_number} was successful!",
+                body:   "Payment for order {$order->order_number} was successful!",
                 data:   ['type' => 'payment_confirmed', 'order_id' => (string) $order->id],
             );
 
@@ -134,7 +134,7 @@ class PaymentController extends Controller
             app(FcmService::class)->notifyUser(
                 userId: $order->vendor_id,
                 title:  '💰 Payment Received',
-                body:   "Order #{$order->order_number} has been paid. Ready to prepare!",
+                body:   "Order {$order->order_number} has been paid. Ready to prepare!",
                 data:   ['type' => 'order_paid', 'order_id' => (string) $order->id],
             );
         });

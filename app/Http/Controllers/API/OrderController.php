@@ -158,7 +158,7 @@ class OrderController extends Controller
             app(FcmService::class)->notifyUser(
                 userId: (int) $request->vendor_id,
                 title:  '🛒 New Order Received',
-                body:   "Order #{$order->order_number} — TZS " . number_format($total),
+                body:   "Order {$order->order_number} — TZS " . number_format($total),
                 data:   ['type' => 'new_order', 'order_id' => (string) $order->id],
             );
 

@@ -122,7 +122,7 @@ class DriverController extends Controller
         app(FcmService::class)->notifyUser(
             $order->user_id,
             '🚗 Order On the Way',
-            "Your order #{$order->order_number} has been picked up and is on its way.",
+            "Your order {$order->order_number} has been picked up and is on its way.",
             ['type' => 'order_status', 'order_id' => (string) $order->id, 'status' => 'out_for_delivery']
         );
 
@@ -151,7 +151,7 @@ class DriverController extends Controller
         app(FcmService::class)->notifyUser(
             $order->user_id,
             '✅ Order Delivered',
-            "Your order #{$order->order_number} has been delivered. Enjoy!",
+            "Your order {$order->order_number} has been delivered. Enjoy!",
             ['type' => 'order_status', 'order_id' => (string) $order->id, 'status' => 'delivered']
         );
 
