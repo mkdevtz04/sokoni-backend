@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
+use App\Models\Driver;
 use App\Models\Order;
 use App\Models\VendorEarning;
 use App\Services\FcmService;
@@ -76,6 +77,21 @@ class VendorOrderController extends Controller
                 body:   $msg['body'],
                 data:   ['type' => 'order_status', 'order_id' => (string) $order->id],
             );
+        }
+
+        // When order is ready for pickup, broadcast to all active drivers
+        if ($data['status'] === 'ready') {
+            $businessName  = $request->user()->vendorProfile?->business_name ?? 'vendor';
+            $driverUserIds = Driver::where('status', 'active')->pluck('user_id')->toArray();
+
+            if (! empty($driverUserIds)) {
+                app(FcmService::class)->notifyUsers(
+                    userIds: $driverUserIds,
+                    title:   '🚴 New Delivery Available',
+                    body:    "Order {$order->order_number} is ready for pickup from {$businessName}",
+                    data:    ['type' => 'new_delivery', 'order_id' => (string) $order->id],
+                );
+            }
         }
 
         return response()->json(['data' => new OrderResource($order->fresh(['user', 'items.product.images', 'driver.user']))]);
