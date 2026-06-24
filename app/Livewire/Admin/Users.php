@@ -17,15 +17,91 @@ class Users extends Component
     public string $search = '';
     public string $filter = 'all'; // all | customer | vendor | super_admin
 
+    // ── Edit modal ────────────────────────────────────────────────────────────
+    public bool   $showEditModal = false;
+    public int    $editUserId    = 0;
+    public string $editFirstName = '';
+    public string $editLastName  = '';
+    public string $editEmail     = '';
+    public string $editPhone     = '';
+    public string $editRole      = 'customer';
+
+    // ── Delete modal ──────────────────────────────────────────────────────────
+    public bool   $showDeleteModal = false;
+    public int    $deleteUserId   = 0;
+    public string $deleteUserName = '';
+
     public function updatedSearch(): void { $this->resetPage(); }
     public function updatedFilter(): void { $this->resetPage(); }
 
+    // ── Status toggle ─────────────────────────────────────────────────────────
     public function toggleStatus(int $id): void
     {
         $user = User::findOrFail($id);
         $user->update(['status' => $user->status === 'active' ? 'suspended' : 'active']);
     }
 
+    // ── Edit ──────────────────────────────────────────────────────────────────
+    public function openEdit(int $id): void
+    {
+        $user = User::findOrFail($id);
+
+        $this->editUserId    = $user->id;
+        $this->editFirstName = $user->first_name ?? '';
+        $this->editLastName  = $user->last_name  ?? '';
+        $this->editEmail     = $user->email       ?? '';
+        $this->editPhone     = $user->phone       ?? '';
+        $this->editRole      = $user->role        ?? 'customer';
+
+        $this->resetValidation();
+        $this->showEditModal = true;
+    }
+
+    public function saveEdit(): void
+    {
+        $this->validate([
+            'editFirstName' => 'required|string|max:80',
+            'editLastName'  => 'required|string|max:80',
+            'editEmail'     => "nullable|email|max:180|unique:users,email,{$this->editUserId}",
+            'editPhone'     => 'required|string|max:30',
+            'editRole'      => 'required|in:customer,vendor,super_admin',
+        ]);
+
+        User::findOrFail($this->editUserId)->update([
+            'first_name' => $this->editFirstName,
+            'last_name'  => $this->editLastName,
+            'email'      => $this->editEmail ?: null,
+            'phone'      => $this->editPhone,
+            'role'       => $this->editRole,
+        ]);
+
+        $this->showEditModal = false;
+        session()->flash('success', 'User updated successfully.');
+    }
+
+    // ── Delete ────────────────────────────────────────────────────────────────
+    public function openDelete(int $id): void
+    {
+        $user = User::findOrFail($id);
+        abort_if($user->role === 'super_admin', 403, 'Cannot delete a super admin.');
+
+        $this->deleteUserId   = $user->id;
+        $this->deleteUserName = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''));
+        $this->showDeleteModal = true;
+    }
+
+    public function confirmDelete(): void
+    {
+        $user = User::findOrFail($this->deleteUserId);
+        abort_if($user->role === 'super_admin', 403);
+
+        $user->delete(); // soft delete
+
+        $this->showDeleteModal = false;
+        session()->flash('success', 'User deleted successfully.');
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
     public function render()
     {
         $users = User::withTrashed()

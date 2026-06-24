@@ -15,6 +15,7 @@
         .safe-b { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
         button, a { -webkit-tap-highlight-color: transparent; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     @livewireStyles
 </head>
 <body class="bg-gray-100 min-h-screen">
