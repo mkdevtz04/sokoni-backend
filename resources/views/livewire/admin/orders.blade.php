@@ -2,12 +2,12 @@
     <!-- Toolbar -->
     <div class="flex flex-col sm:flex-row gap-3 mb-5">
         <input wire:model.live.debounce.300ms="search" type="text"
-            placeholder="Search order # or customer..."
+            placeholder="{{ __('admin.orders.search_placeholder') }}"
             class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
 
         <select wire:model.live="status"
             class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-            <option value="all">All Statuses</option>
+            <option value="all">{{ __('admin.orders.all_statuses') }}</option>
             @foreach ($statuses as $s)
                 <option value="{{ $s }}">{{ ucfirst(str_replace('_', ' ', $s)) }}</option>
             @endforeach
@@ -19,14 +19,14 @@
             <table class="w-full text-sm min-w-[780px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Order #</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Customer</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Vendor</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Payment</th>
-                        <th class="px-5 py-3 text-right whitespace-nowrap">Total</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Date</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Action</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.orders.order_no') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.orders.customer') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.orders.vendor') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.orders.status') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.orders.payment') }}</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">{{ __('admin.orders.total') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.orders.date') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.orders.action') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -66,7 +66,7 @@
                                 <div class="flex gap-1">
                                     <button wire:click="saveStatus"
                                         class="px-2.5 py-1.5 bg-primary hover:bg-orange-700 text-white text-xs font-medium rounded-lg">
-                                        Save
+                                        {{ __('admin.orders.save') }}
                                     </button>
                                     <button wire:click="cancelEdit"
                                         class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-medium rounded-lg">
@@ -76,13 +76,13 @@
                             @else
                                 <button wire:click="startEdit({{ $order->id }}, '{{ $order->status }}')"
                                     class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-medium rounded-lg transition-colors">
-                                    Update
+                                    {{ __('admin.orders.update') }}
                                 </button>
                             @endif
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="px-5 py-12 text-center text-gray-400">No orders found</td></tr>
+                    <tr><td colspan="8" class="px-5 py-12 text-center text-gray-400">{{ __('admin.orders.no_orders') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

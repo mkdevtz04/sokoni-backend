@@ -6,43 +6,43 @@
         @php
             $stats = [
                 [
-                    'label'   => 'Customers',
+                    'label'   => __('admin.dashboard.customers'),
                     'value'   => number_format($totalUsers),
-                    'sub'     => 'Registered accounts',
+                    'sub'     => __('admin.dashboard.registered_accounts'),
                     'color'   => 'blue',
                     'bg'      => 'bg-blue-50',
                     'text'    => 'text-blue-600',
                     'icon'    => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
                 ],
                 [
-                    'label'   => 'Vendors',
+                    'label'   => __('admin.dashboard.vendors'),
                     'value'   => number_format($totalVendors),
-                    'sub'     => 'Active stores',
+                    'sub'     => __('admin.dashboard.active_stores'),
                     'color'   => 'purple',
                     'bg'      => 'bg-purple-50',
                     'text'    => 'text-purple-600',
                     'icon'    => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
                 ],
                 [
-                    'label'   => 'Products',
+                    'label'   => __('admin.dashboard.products'),
                     'value'   => number_format($totalProducts),
-                    'sub'     => 'Active listings',
+                    'sub'     => __('admin.dashboard.active_listings'),
                     'color'   => 'green',
                     'bg'      => 'bg-green-50',
                     'text'    => 'text-green-600',
                     'icon'    => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
                 ],
                 [
-                    'label'   => 'Orders',
+                    'label'   => __('admin.dashboard.orders'),
                     'value'   => number_format($totalOrders),
-                    'sub'     => 'All time',
+                    'sub'     => __('admin.dashboard.all_time'),
                     'color'   => 'orange',
                     'bg'      => 'bg-orange-50',
                     'text'    => 'text-orange-600',
                     'icon'    => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
                 ],
                 [
-                    'label'   => "Today's Revenue",
+                    'label'   => __('admin.dashboard.todays_revenue'),
                     'value'   => 'TZS ' . number_format($todayRevenue),
                     'sub'     => now()->format('d M Y'),
                     'color'   => 'teal',
@@ -51,7 +51,7 @@
                     'icon'    => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 13v-1m-5.657-9.343A8 8 0 1112 4',
                 ],
                 [
-                    'label'   => 'Month Revenue',
+                    'label'   => __('admin.dashboard.month_revenue'),
                     'value'   => 'TZS ' . number_format($monthRevenue),
                     'sub'     => now()->format('F Y'),
                     'color'   => 'indigo',
@@ -60,9 +60,9 @@
                     'icon'    => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
                 ],
                 [
-                    'label'   => 'Pending Approvals',
+                    'label'   => __('admin.dashboard.pending_approvals'),
                     'value'   => number_format($pendingApprovals),
-                    'sub'     => 'Vendors awaiting review',
+                    'sub'     => __('admin.dashboard.vendors_awaiting'),
                     'color'   => 'red',
                     'bg'      => 'bg-red-50',
                     'text'    => 'text-red-600',
@@ -91,8 +91,8 @@
     <div class="bg-white rounded-2xl shadow-sm p-5 mb-4">
         <div class="flex items-center justify-between mb-1">
             <div>
-                <h2 class="font-semibold text-gray-800">Revenue — Last 30 Days</h2>
-                <p class="text-xs text-gray-400 mt-0.5">Paid orders only</p>
+                <h2 class="font-semibold text-gray-800">{{ __('admin.dashboard.revenue_30d') }}</h2>
+                <p class="text-xs text-gray-400 mt-0.5">{{ __('admin.dashboard.paid_orders_only') }}</p>
             </div>
             <span class="text-xs text-gray-400">TZS</span>
         </div>
@@ -106,8 +106,8 @@
 
         <div class="bg-white rounded-2xl shadow-sm p-5">
             <div class="mb-1">
-                <h2 class="font-semibold text-gray-800">Daily Orders — Last 30 Days</h2>
-                <p class="text-xs text-gray-400 mt-0.5">All statuses</p>
+                <h2 class="font-semibold text-gray-800">{{ __('admin.dashboard.daily_orders_30d') }}</h2>
+                <p class="text-xs text-gray-400 mt-0.5">{{ __('admin.dashboard.all_statuses') }}</p>
             </div>
             <div wire:ignore>
                 <div id="chart-orders"></div>
@@ -116,8 +116,8 @@
 
         <div class="bg-white rounded-2xl shadow-sm p-5">
             <div class="mb-1">
-                <h2 class="font-semibold text-gray-800">Orders by Status</h2>
-                <p class="text-xs text-gray-400 mt-0.5">All time distribution</p>
+                <h2 class="font-semibold text-gray-800">{{ __('admin.dashboard.orders_by_status') }}</h2>
+                <p class="text-xs text-gray-400 mt-0.5">{{ __('admin.dashboard.all_time_dist') }}</p>
             </div>
             <div wire:ignore>
                 <div id="chart-status"></div>
@@ -129,8 +129,8 @@
     @if (count($vendorNames) > 0)
     <div class="bg-white rounded-2xl shadow-sm p-5 mb-6">
         <div class="mb-1">
-            <h2 class="font-semibold text-gray-800">Top Vendors by Revenue</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Gross sales, all time</p>
+            <h2 class="font-semibold text-gray-800">{{ __('admin.dashboard.top_vendors') }}</h2>
+            <p class="text-xs text-gray-400 mt-0.5">{{ __('admin.dashboard.gross_sales') }}</p>
         </div>
         <div wire:ignore>
             <div id="chart-vendors"></div>
@@ -141,18 +141,18 @@
     {{-- ── Recent orders table ──────────────────────────────────────────────── --}}
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h2 class="font-semibold text-gray-800">Recent Orders</h2>
-            <a href="{{ route('admin.orders') }}" class="text-sm text-primary hover:underline">View all</a>
+            <h2 class="font-semibold text-gray-800">{{ __('admin.dashboard.recent_orders') }}</h2>
+            <a href="{{ route('admin.orders') }}" class="text-sm text-primary hover:underline">{{ __('admin.dashboard.view_all') }}</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm min-w-[560px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Order #</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Customer</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Vendor</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
-                        <th class="px-5 py-3 text-right whitespace-nowrap">Total</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.dashboard.order_no') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.dashboard.customer') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.dashboard.vendor') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.dashboard.status') }}</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">{{ __('admin.dashboard.total') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -172,7 +172,7 @@
                         <td class="px-5 py-3 text-right font-semibold text-gray-800 whitespace-nowrap">TZS {{ number_format($order['total']) }}</td>
                     </tr>
                     @empty
-                    <tr><td colspan="5" class="px-5 py-10 text-center text-gray-400">No orders yet</td></tr>
+                    <tr><td colspan="5" class="px-5 py-10 text-center text-gray-400">{{ __('admin.dashboard.no_orders') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

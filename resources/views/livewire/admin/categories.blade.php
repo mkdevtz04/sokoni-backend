@@ -11,7 +11,7 @@
     {{-- ── Toolbar ────────────────────────────────────────────────────────── --}}
     <div class="flex flex-col sm:flex-row gap-3 mb-5">
         <input wire:model.live.debounce.300ms="search" type="text"
-            placeholder="Search categories..."
+            placeholder="{{ __('admin.categories.search_placeholder') }}"
             class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
 
         <button wire:click="openCreate"
@@ -19,7 +19,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
-            New Category
+            {{ __('admin.categories.new_category') }}
         </button>
     </div>
 
@@ -29,12 +29,12 @@
             <table class="w-full text-sm min-w-[580px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left w-8 whitespace-nowrap">Order</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Category</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Description</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Products</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Actions</th>
+                        <th class="px-5 py-3 text-left w-8 whitespace-nowrap">{{ __('admin.categories.order') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.categories.category') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.categories.description') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.categories.products') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.categories.status') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.categories.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -99,7 +99,7 @@
                                     ? 'bg-green-100 text-green-700 hover:bg-green-200'
                                     : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}
                                     px-2.5 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer">
-                                {{ $cat->is_active ? 'Active' : 'Inactive' }}
+                                {{ $cat->is_active ? __('admin.categories.active') : __('admin.categories.inactive') }}
                             </button>
                         </td>
 
@@ -108,12 +108,12 @@
                             <div class="flex gap-2">
                                 <button wire:click="openEdit({{ $cat->id }})"
                                     class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-medium rounded-lg transition-colors">
-                                    Edit
+                                    {{ __('admin.categories.edit') }}
                                 </button>
                                 <button
                                     @click="deleteId = {{ $cat->id }}; deleteName = '{{ addslashes($cat->name) }}'"
                                     class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-medium rounded-lg transition-colors">
-                                    Delete
+                                    {{ __('admin.categories.delete') }}
                                 </button>
                             </div>
                         </td>
@@ -122,9 +122,9 @@
                     <tr>
                         <td colspan="6" class="px-5 py-12 text-center text-gray-400">
                             @if ($search)
-                                No categories match "{{ $search }}"
+                                {{ __('admin.categories.no_match', ['search' => $search]) }}
                             @else
-                                No categories yet — create your first one.
+                                {{ __('admin.categories.no_categories') }}
                             @endif
                         </td>
                     </tr>
@@ -154,7 +154,6 @@
              x-on:keydown.escape.window="deleteId = null; deleteName = ''">
 
             <div class="flex items-start gap-4">
-                {{-- Warning icon --}}
                 <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -162,11 +161,11 @@
                     </svg>
                 </div>
                 <div class="flex-1">
-                    <h3 class="font-bold text-gray-800 text-base">Delete Category</h3>
+                    <h3 class="font-bold text-gray-800 text-base">{{ __('admin.categories.delete_modal_title') }}</h3>
                     <p class="text-sm text-gray-500 mt-1">
-                        Are you sure you want to delete
+                        {{ Str::before(__('admin.categories.delete_confirm', ['name' => '']), '"') }}
                         <span class="font-semibold text-gray-700" x-text="'&quot;' + deleteName + '&quot;'"></span>?
-                        This action cannot be undone.
+                        {{ Str::after(__('admin.categories.delete_confirm', ['name' => '']), '?"') }}
                     </p>
                 </div>
             </div>
@@ -174,11 +173,11 @@
             <div class="flex gap-3 mt-6 justify-end">
                 <button @click="deleteId = null; deleteName = ''"
                     class="px-5 py-2.5 text-gray-600 hover:text-gray-800 text-sm font-medium border border-gray-200 hover:border-gray-300 rounded-xl transition-colors">
-                    Cancel
+                    {{ __('admin.categories.cancel') }}
                 </button>
                 <button @click="$wire.delete(deleteId); deleteId = null; deleteName = ''"
                     class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-xl transition-colors">
-                    Yes, Delete
+                    {{ __('admin.categories.yes_delete') }}
                 </button>
             </div>
         </div>
@@ -197,7 +196,7 @@
             {{-- Header --}}
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                 <h2 class="text-base font-bold text-gray-800">
-                    {{ $editingId ? 'Edit Category' : 'New Category' }}
+                    {{ $editingId ? __('admin.categories.edit_category') : __('admin.categories.new_category') }}
                 </h2>
                 <button wire:click="closeModal"
                     class="text-gray-400 hover:text-gray-600 transition-colors">
@@ -213,7 +212,7 @@
                 {{-- Name --}}
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                        Name <span class="text-red-400">*</span>
+                        {{ __('admin.categories.name_label') }} <span class="text-red-400">*</span>
                     </label>
                     <input wire:model="name" type="text" placeholder="e.g. Vegetables"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
@@ -225,7 +224,7 @@
                 {{-- Description --}}
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                        Description
+                        {{ __('admin.categories.desc_label') }}
                     </label>
                     <textarea wire:model="description" rows="2" placeholder="Short description (optional)"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
@@ -237,7 +236,7 @@
                 {{-- Sort order --}}
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                        Sort Order
+                        {{ __('admin.categories.sort_order') }}
                     </label>
                     <input wire:model="sortOrder" type="number" min="0"
                         class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
@@ -249,15 +248,15 @@
                 {{-- Icon upload --}}
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">
-                        Icon Image
-                        <span class="normal-case font-normal text-gray-400 ml-1">(PNG/JPG, max 1 MB)</span>
+                        {{ __('admin.categories.icon_label') }}
+                        <span class="normal-case font-normal text-gray-400 ml-1">{{ __('admin.categories.icon_hint') }}</span>
                     </label>
 
                     @if ($existingIcon && ! $icon)
                         <div class="flex items-center gap-3 mb-2">
                             <img src="{{ asset('storage/' . $existingIcon) }}"
                                  class="w-12 h-12 rounded-xl object-cover border border-gray-100">
-                            <span class="text-xs text-gray-400">Current icon</span>
+                            <span class="text-xs text-gray-400">{{ __('admin.categories.current_icon') }}</span>
                         </div>
                     @endif
 
@@ -265,7 +264,7 @@
                         <div class="flex items-center gap-3 mb-2">
                             <img src="{{ $icon->temporaryUrl() }}"
                                  class="w-12 h-12 rounded-xl object-cover border border-gray-100">
-                            <span class="text-xs text-gray-400">New icon (not saved yet)</span>
+                            <span class="text-xs text-gray-400">{{ __('admin.categories.new_icon') }}</span>
                         </div>
                     @endif
 
@@ -277,7 +276,7 @@
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                         <span class="text-sm text-gray-400 group-hover:text-primary transition-colors">
-                            {{ $icon ? 'Change image' : 'Choose image' }}
+                            {{ $icon ? __('admin.categories.change_image') : __('admin.categories.choose_image') }}
                         </span>
                         <input wire:model="icon" type="file" accept="image/*" class="hidden">
                     </label>
@@ -291,7 +290,7 @@
             <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100">
                 <button wire:click="closeModal"
                     class="px-5 py-2.5 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors">
-                    Cancel
+                    {{ __('admin.categories.cancel_btn') }}
                 </button>
                 <button wire:click="save" wire:loading.attr="disabled"
                     class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-xl transition-colors disabled:opacity-60 flex items-center gap-2">
@@ -301,7 +300,7 @@
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
                         </svg>
                     </span>
-                    {{ $editingId ? 'Save Changes' : 'Create Category' }}
+                    {{ $editingId ? __('admin.categories.save_changes') : __('admin.categories.create_category') }}
                 </button>
             </div>
         </div>

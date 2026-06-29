@@ -22,15 +22,15 @@
     {{-- Toolbar --}}
     <div class="flex flex-col sm:flex-row gap-3 mb-5">
         <input wire:model.live.debounce.300ms="search" type="text"
-            placeholder="Search name or phone..."
+            placeholder="{{ __('admin.drivers.search_placeholder') }}"
             class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
 
         <select wire:model.live="filter"
             class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="all">All</option>
+            <option value="pending">{{ __('admin.drivers.pending') }}</option>
+            <option value="approved">{{ __('admin.drivers.approved') }}</option>
+            <option value="rejected">{{ __('admin.drivers.rejected') }}</option>
+            <option value="all">{{ __('admin.drivers.all') }}</option>
         </select>
     </div>
 
@@ -40,12 +40,12 @@
             <table class="w-full text-sm min-w-[640px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Applicant</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">ID Number</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Documents</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Applied</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Actions</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.drivers.applicant') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.drivers.id_number') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.drivers.documents') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.drivers.status') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.drivers.applied') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.drivers.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -85,7 +85,7 @@
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                                         </svg>
-                                        Driver License
+                                        {{ __('admin.drivers.driver_license') }}
                                     </a>
                                 @endif
                                 @if ($app->national_id_image_path)
@@ -94,19 +94,19 @@
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                                         </svg>
-                                        National ID
+                                        {{ __('admin.drivers.national_id') }}
                                     </a>
                                 @endif
                             </div>
                         </td>
                         <td class="px-5 py-3">
                             @if ($app->status === 'pending')
-                                <span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Pending</span>
+                                <span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">{{ __('admin.drivers.pending') }}</span>
                             @elseif ($app->status === 'approved')
-                                <span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Approved</span>
+                                <span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">{{ __('admin.drivers.approved') }}</span>
                             @else
                                 <span class="px-2.5 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium"
-                                      title="{{ $app->rejection_reason }}">Rejected</span>
+                                      title="{{ $app->rejection_reason }}">{{ __('admin.drivers.rejected') }}</span>
                             @endif
                         </td>
                         <td class="px-5 py-3 text-gray-400 text-xs">
@@ -117,16 +117,16 @@
                                 <div class="flex gap-2">
                                     <button wire:click="openApproveConfirm({{ $app->id }}, '{{ addslashes($app->full_name) }}')"
                                         class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-medium rounded-lg transition-colors">
-                                        Approve
+                                        {{ __('admin.drivers.approve') }}
                                     </button>
                                     <button wire:click="openRejectModal({{ $app->id }})"
                                         class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-medium rounded-lg transition-colors">
-                                        Reject
+                                        {{ __('admin.drivers.reject') }}
                                     </button>
                                 </div>
                             @elseif ($app->status === 'approved')
                                 <span class="text-xs text-gray-400">
-                                    by {{ $app->reviewer?->first_name ?? 'Admin' }}<br>
+                                    {{ __('admin.drivers.by_reviewer') }} {{ $app->reviewer?->first_name ?? 'Admin' }}<br>
                                     {{ $app->reviewed_at?->format('d M Y') }}
                                 </span>
                             @else
@@ -140,7 +140,7 @@
                     @empty
                     <tr>
                         <td colspan="6" class="px-5 py-12 text-center text-gray-400">
-                            No {{ $filter === 'all' ? '' : $filter }} applications found
+                            {{ __('admin.drivers.no_applications', ['filter' => $filter === 'all' ? '' : $filter]) }}
                         </td>
                     </tr>
                     @endforelse
@@ -152,7 +152,7 @@
         </div>
     </div>
 
-    {{-- ── Approve confirmation modal (Livewire-only, no Alpine event dispatch) ── --}}
+    {{-- ── Approve confirmation modal ── --}}
     @if ($showApproveConfirm)
         <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
@@ -163,39 +163,38 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-bold text-gray-800">Approve Driver</h3>
-                        <p class="text-xs text-gray-500">This will create an account and send an SMS</p>
+                        <h3 class="font-bold text-gray-800">{{ __('admin.drivers.approve_modal_title') }}</h3>
+                        <p class="text-xs text-gray-500">{{ __('admin.drivers.approve_modal_sub') }}</p>
                     </div>
                 </div>
                 <p class="text-sm text-gray-600 mb-5">
-                    Approve <strong>{{ $approvingName }}</strong> as a Sokoni driver?
-                    They will receive an SMS notification and can log into the app immediately.
+                    {{ __('admin.drivers.approve_confirm', ['name' => $approvingName]) }}
                 </p>
                 <div class="flex gap-3">
                     <button wire:click="cancelApprove"
                         class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-                        Cancel
+                        {{ __('admin.drivers.cancel') }}
                     </button>
                     <button wire:click="confirmApprove" wire:loading.attr="disabled" wire:target="confirmApprove"
                         class="flex-1 px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-60">
-                        <span wire:loading.remove wire:target="confirmApprove">Yes, Approve</span>
-                        <span wire:loading wire:target="confirmApprove">Approving...</span>
+                        <span wire:loading.remove wire:target="confirmApprove">{{ __('admin.drivers.yes_approve') }}</span>
+                        <span wire:loading wire:target="confirmApprove">{{ __('admin.drivers.approving') }}</span>
                     </button>
                 </div>
             </div>
         </div>
     @endif
 
-    {{-- ── Reject modal (Livewire-only) ── --}}
+    {{-- ── Reject modal ── --}}
     @if ($showRejectModal)
         <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-                <h3 class="font-bold text-gray-800 text-lg mb-2">Reject Application</h3>
+                <h3 class="font-bold text-gray-800 text-lg mb-2">{{ __('admin.drivers.reject_modal_title') }}</h3>
                 <p class="text-sm text-gray-500 mb-4">
-                    Provide a reason. It will be sent to the applicant via SMS.
+                    {{ __('admin.drivers.reject_modal_sub') }}
                 </p>
                 <textarea wire:model="rejectReason" rows="3"
-                    placeholder="e.g. Driver license appears expired. Please reapply with a valid license."
+                    placeholder="{{ __('admin.drivers.reject_reason_ph') }}"
                     class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
                 @error('rejectReason')
                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -203,12 +202,12 @@
                 <div class="flex gap-3 mt-4">
                     <button wire:click="closeRejectModal"
                         class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-                        Cancel
+                        {{ __('admin.drivers.cancel') }}
                     </button>
                     <button wire:click="reject" wire:loading.attr="disabled" wire:target="reject"
                         class="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-medium transition-colors disabled:opacity-60">
-                        <span wire:loading.remove wire:target="reject">Reject & Notify</span>
-                        <span wire:loading wire:target="reject">Sending...</span>
+                        <span wire:loading.remove wire:target="reject">{{ __('admin.drivers.reject_and_notify') }}</span>
+                        <span wire:loading wire:target="reject">{{ __('admin.drivers.sending') }}</span>
                     </button>
                 </div>
             </div>

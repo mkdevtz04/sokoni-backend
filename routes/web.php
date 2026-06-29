@@ -4,6 +4,14 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Web\DriverApplicationController;
 use Illuminate\Support\Facades\Route;
 
+// ── Language switch ───────────────────────────────────────────────────────────
+Route::post('lang/{locale}', function (string $locale) {
+    if (in_array($locale, ['en', 'sw'])) {
+        session(['locale' => $locale]);
+    }
+    return back();
+})->name('lang.switch');
+
 // ── Public ───────────────────────────────────────────────────────────────────
 Route::get('/', fn () => view('welcome'))->name('home');
 

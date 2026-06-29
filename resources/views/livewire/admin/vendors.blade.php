@@ -2,14 +2,14 @@
     <!-- Toolbar -->
     <div class="flex flex-col sm:flex-row gap-3 mb-5">
         <input wire:model.live.debounce.300ms="search" type="text"
-            placeholder="Search business name or phone..."
+            placeholder="{{ __('admin.vendors.search_placeholder') }}"
             class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
 
         <select wire:model.live="filter"
             class="px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary">
-            <option value="all">All Vendors</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
+            <option value="all">{{ __('admin.vendors.all_vendors') }}</option>
+            <option value="pending">{{ __('admin.vendors.pending') }}</option>
+            <option value="approved">{{ __('admin.vendors.approved') }}</option>
         </select>
     </div>
 
@@ -19,12 +19,12 @@
             <table class="w-full text-sm min-w-[640px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Business</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Owner</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Region</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Rating</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Status</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Actions</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.vendors.business') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.vendors.owner') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.vendors.region') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.vendors.rating') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.vendors.status') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.vendors.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -54,9 +54,9 @@
                         </td>
                         <td class="px-5 py-3">
                             @if ($vendor->is_approved)
-                                <span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Approved</span>
+                                <span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">{{ __('admin.vendors.approved') }}</span>
                             @else
-                                <span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Pending</span>
+                                <span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">{{ __('admin.vendors.pending') }}</span>
                             @endif
                         </td>
                         <td class="px-5 py-3">
@@ -64,19 +64,19 @@
                                 @if (! $vendor->is_approved)
                                     <button wire:click="approve({{ $vendor->id }})"
                                         class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-medium rounded-lg transition-colors">
-                                        Approve
+                                        {{ __('admin.vendors.approve') }}
                                     </button>
                                 @else
                                     <button wire:click="reject({{ $vendor->id }})"
                                         class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-medium rounded-lg transition-colors">
-                                        Revoke
+                                        {{ __('admin.vendors.revoke') }}
                                     </button>
                                 @endif
                             </div>
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="6" class="px-5 py-12 text-center text-gray-400">No vendors found</td></tr>
+                    <tr><td colspan="6" class="px-5 py-12 text-center text-gray-400">{{ __('admin.vendors.no_vendors') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

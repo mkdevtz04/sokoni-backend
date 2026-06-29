@@ -2,7 +2,7 @@
     <!-- Toolbar -->
     <div class="mb-5">
         <input wire:model.live.debounce.300ms="search" type="text"
-            placeholder="Search product name or vendor..."
+            placeholder="{{ __('admin.products.search_placeholder') }}"
             class="w-full sm:w-96 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary">
     </div>
 
@@ -11,14 +11,14 @@
             <table class="w-full text-sm min-w-[720px]">
                 <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
                     <tr>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Product</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Vendor</th>
-                        <th class="px-5 py-3 text-left whitespace-nowrap">Category</th>
-                        <th class="px-5 py-3 text-right whitespace-nowrap">Price</th>
-                        <th class="px-5 py-3 text-center whitespace-nowrap">Stock</th>
-                        <th class="px-5 py-3 text-center whitespace-nowrap">Active</th>
-                        <th class="px-5 py-3 text-center whitespace-nowrap">Featured</th>
-                        <th class="px-5 py-3 text-center whitespace-nowrap">Delete</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.products.product') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.products.vendor') }}</th>
+                        <th class="px-5 py-3 text-left whitespace-nowrap">{{ __('admin.products.category') }}</th>
+                        <th class="px-5 py-3 text-right whitespace-nowrap">{{ __('admin.products.price') }}</th>
+                        <th class="px-5 py-3 text-center whitespace-nowrap">{{ __('admin.products.stock') }}</th>
+                        <th class="px-5 py-3 text-center whitespace-nowrap">{{ __('admin.products.active') }}</th>
+                        <th class="px-5 py-3 text-center whitespace-nowrap">{{ __('admin.products.featured') }}</th>
+                        <th class="px-5 py-3 text-center whitespace-nowrap">{{ __('admin.products.delete') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -29,7 +29,7 @@
                             <p class="text-xs text-gray-400">{{ $product->sku ?? '-' }}</p>
                         </td>
                         <td class="px-5 py-3 text-gray-600">{{ $product->vendorProfile->business_name ?? '-' }}</td>
-                        <td class="px-5 py-3 text-gray-500 text-xs">{{ $product->category->name ?? 'Uncategorised' }}</td>
+                        <td class="px-5 py-3 text-gray-500 text-xs">{{ $product->category->name ?? __('admin.products.uncategorised') }}</td>
                         <td class="px-5 py-3 text-right font-semibold text-gray-800">
                             TZS {{ number_format($product->sale_price ?? $product->price) }}
                             @if ($product->sale_price)
@@ -57,7 +57,7 @@
                         </td>
                         <td class="px-5 py-3 text-center">
                             <button wire:click="delete({{ $product->id }})"
-                                wire:confirm="Delete '{{ $product->name }}'? This cannot be undone."
+                                wire:confirm="{{ __('admin.products.delete_confirm', ['name' => $product->name]) }}"
                                 class="text-red-400 hover:text-red-600 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -67,7 +67,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="px-5 py-12 text-center text-gray-400">No products found</td></tr>
+                    <tr><td colspan="8" class="px-5 py-12 text-center text-gray-400">{{ __('admin.products.no_products') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>
