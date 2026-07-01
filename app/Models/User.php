@@ -28,11 +28,13 @@ class User extends Authenticatable
         'longitude',
         'email_verified_at',
         'phone_verified_at',
+        'admin_session_id',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'admin_session_id',
     ];
 
     protected function casts(): array

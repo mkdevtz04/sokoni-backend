@@ -47,6 +47,12 @@
 
         {{-- Card --}}
         <div class="bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+            @if (session('session_kicked'))
+                <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-4 py-3 mb-5 text-sm flex items-start gap-2.5">
+                    <svg class="w-4 h-4 mt-0.5 shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                    <span>{{ __('admin.login.session_kicked') }}</span>
+                </div>
+            @endif
             @if ($errors->any())
                 <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 mb-5 text-sm">
                     {{ $errors->first() }}

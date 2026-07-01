@@ -18,13 +18,14 @@ return [
     ],
 
     'login' => [
-        'title'    => 'Sokoni Admin',
-        'subtitle' => 'Sign in to manage your marketplace',
-        'email'    => 'Email',
-        'password' => 'Password',
-        'remember' => 'Remember me',
-        'submit'   => 'Sign In',
-        'footer'   => 'Sokoni Marketplace',
+        'title'          => 'Sokoni Admin',
+        'subtitle'       => 'Sign in to manage your marketplace',
+        'email'          => 'Email',
+        'password'       => 'Password',
+        'remember'       => 'Remember me',
+        'submit'         => 'Sign In',
+        'footer'         => 'Sokoni Marketplace',
+        'session_kicked' => 'You were signed out because your account was accessed from another device.',
     ],
 
     'dashboard' => [

@@ -18,13 +18,14 @@ return [
     ],
 
     'login' => [
-        'title'    => 'Sokoni Admin',
-        'subtitle' => 'Ingia kudhibiti soko lako',
-        'email'    => 'Barua pepe',
-        'password' => 'Nywila',
-        'remember' => 'Nikumbuke',
-        'submit'   => 'Ingia',
-        'footer'   => 'Sokoni Marketplace',
+        'title'          => 'Sokoni Admin',
+        'subtitle'       => 'Ingia kudhibiti soko lako',
+        'email'          => 'Barua pepe',
+        'password'       => 'Nywila',
+        'remember'       => 'Nikumbuke',
+        'submit'         => 'Ingia',
+        'footer'         => 'Sokoni Marketplace',
+        'session_kicked' => 'Ulitolewa nje kwa sababu akaunti yako iliingiwa kutoka kifaa kingine.',
     ],
 
     'dashboard' => [

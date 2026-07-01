@@ -29,6 +29,8 @@ class AuthController extends Controller
                 return back()->withErrors(['email' => 'Access denied. Admins only.']);
             }
             $request->session()->regenerate();
+            // Record this session — any other active admin device will be kicked out
+            Auth::user()->update(['admin_session_id' => session()->getId()]);
             return redirect()->route('admin.dashboard');
         }
 
@@ -37,6 +39,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        Auth::user()?->update(['admin_session_id' => null]);
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
