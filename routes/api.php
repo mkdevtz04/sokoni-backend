@@ -25,13 +25,17 @@ use Illuminate\Support\Facades\Route;
 | Public Auth Routes
 |--------------------------------------------------------------------------
 */
-Route::prefix('auth')->group(function () {
+Route::middleware('throttle:auth')->prefix('auth')->group(function () {
     Route::post('register',        [AuthController::class, 'register']);
     Route::post('login',           [AuthController::class, 'login']);
     Route::post('verify-otp',      [AuthController::class, 'verifyOtp']);
+    Route::post('reset-password',  [AuthController::class, 'resetPassword']);
+});
+
+// Tighter limit: OTP resend & forgot-password can trigger SMS — 3/min per IP
+Route::middleware('throttle:otp')->prefix('auth')->group(function () {
     Route::post('resend-otp',      [AuthController::class, 'resendOtp']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('reset-password',  [AuthController::class, 'resetPassword']);
 });
 
 /*
@@ -66,7 +70,7 @@ Route::get('vendors/{vendorId}/reviews',       [ReviewController::class, 'forVen
 | Protected Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
 
     Route::prefix('auth')->group(function () {
         Route::get('me',     [AuthController::class, 'me']);
