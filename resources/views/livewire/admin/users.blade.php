@@ -180,13 +180,21 @@
                 {{-- Role --}}
                 <div>
                     <label class="block text-xs font-medium text-gray-600 mb-1.5">{{ __('admin.users.role_label') }}</label>
-                    <select wire:model="editRole"
-                        class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary @error('editRole') border-red-300 @enderror">
-                        <option value="customer">{{ __('admin.users.customer_role') }}</option>
-                        <option value="vendor">{{ __('admin.users.vendor_role') }}</option>
-                        <option value="super_admin">{{ __('admin.users.super_admin_role') }}</option>
-                    </select>
-                    @error('editRole') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    @if (in_array($editRole, ['admin', 'super_admin']))
+                        <div class="w-full px-3 py-2.5 border border-gray-100 bg-gray-50 rounded-xl text-sm text-gray-500 flex items-center justify-between">
+                            <span>{{ $editRole === 'super_admin' ? __('admin.users.super_admin_role') : __('admin.users.admin_role') }}</span>
+                            <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                    @else
+                        <select wire:model="editRole"
+                            class="w-full px-3 py-2.5 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary {{ $errors->has('editRole') ? 'border border-red-300' : 'border border-gray-200' }}">
+                            <option value="customer">{{ __('admin.users.customer_role') }}</option>
+                            <option value="vendor">{{ __('admin.users.vendor_role') }}</option>
+                        </select>
+                        @error('editRole') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    @endif
                 </div>
             </div>
 

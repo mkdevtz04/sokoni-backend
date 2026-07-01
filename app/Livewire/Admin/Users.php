@@ -59,21 +59,36 @@ class Users extends Component
 
     public function saveEdit(): void
     {
-        $this->validate([
+        $target = User::findOrFail($this->editUserId);
+
+        $isAdminAccount = in_array($target->role, ['admin', 'super_admin']);
+
+        $rules = [
             'editFirstName' => 'required|string|max:80',
             'editLastName'  => 'required|string|max:80',
             'editEmail'     => "nullable|email|max:180|unique:users,email,{$this->editUserId}",
             'editPhone'     => 'required|string|max:30',
-            'editRole'      => 'required|in:customer,vendor,super_admin',
-        ]);
+        ];
 
-        User::findOrFail($this->editUserId)->update([
+        if (! $isAdminAccount) {
+            $rules['editRole'] = 'required|in:customer,vendor';
+        }
+
+        $this->validate($rules);
+
+        $data = [
             'first_name' => $this->editFirstName,
             'last_name'  => $this->editLastName,
             'email'      => $this->editEmail ?: null,
             'phone'      => $this->editPhone,
-            'role'       => $this->editRole,
-        ]);
+        ];
+
+        // Role is locked for admin accounts — cannot be changed from this page
+        if (! $isAdminAccount) {
+            $data['role'] = $this->editRole;
+        }
+
+        $target->update($data);
 
         $this->showEditModal = false;
         session()->flash('success', 'User updated successfully.');

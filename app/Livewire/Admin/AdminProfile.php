@@ -2,12 +2,11 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('admin.layouts.app')]
 class AdminProfile extends Component
 {
     // Personal info fields
@@ -22,9 +21,14 @@ class AdminProfile extends Component
 
     public string $activeTab = 'info'; // info | password
 
+    private function authUser(): User
+    {
+        return User::findOrFail(Auth::id());
+    }
+
     public function mount(): void
     {
-        $user = Auth::user();
+        $user = $this->authUser();
         $this->firstName = $user->first_name;
         $this->lastName  = $user->last_name;
         $this->email     = $user->email ?? '';
@@ -38,7 +42,7 @@ class AdminProfile extends Component
             'email'     => 'required|email|unique:users,email,' . Auth::id(),
         ]);
 
-        Auth::user()->update([
+        $this->authUser()->update([
             'first_name' => $this->firstName,
             'last_name'  => $this->lastName,
             'email'      => $this->email,
@@ -55,12 +59,14 @@ class AdminProfile extends Component
             'newPasswordConfirm' => 'required|same:newPassword',
         ]);
 
-        if (! Hash::check($this->currentPassword, Auth::user()->password)) {
+        $user = $this->authUser();
+
+        if (! Hash::check($this->currentPassword, $user->password)) {
             $this->addError('currentPassword', __('admin.profile.wrong_password'));
             return;
         }
 
-        Auth::user()->update(['password' => $this->newPassword]);
+        $user->update(['password' => $this->newPassword]);
 
         $this->reset('currentPassword', 'newPassword', 'newPasswordConfirm');
         session()->flash('success', __('admin.profile.password_updated'));
@@ -68,6 +74,7 @@ class AdminProfile extends Component
 
     public function render()
     {
+        /** @disregard P1013 Livewire adds layout() to View via macro at runtime */
         return view('livewire.admin.admin-profile')
             ->layout('admin.layouts.app', ['title' => __('admin.profile.title')]);
     }

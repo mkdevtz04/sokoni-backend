@@ -4,12 +4,9 @@ namespace App\Livewire\Admin;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Layout('admin.layouts.app')]
 class Admins extends Component
 {
     use WithPagination;
@@ -72,6 +69,8 @@ class Admins extends Component
 
     public function save(): void
     {
+        abort_unless(Auth::user()->role === 'super_admin', 403);
+
         $rules = [
             'firstName' => 'required|string|max:100',
             'lastName'  => 'required|string|max:100',
@@ -107,7 +106,7 @@ class Admins extends Component
             $data['phone']    = 'admin_' . time(); // placeholder — admins log in via email
             $data['password'] = $this->password;
             User::create($data);
-            session()->flash('success', __('admin.admins.created'));
+            session()->flash('success', __('admin.admins.flash_created'));
         }
 
         $this->showModal = false;
@@ -180,6 +179,7 @@ class Admins extends Component
             ->orderBy('created_at')
             ->paginate(15);
 
+        /** @disregard P1013 Livewire adds layout() to View via macro at runtime */
         return view('livewire.admin.admins', compact('admins'))
             ->layout('admin.layouts.app', ['title' => __('admin.admins.title')]);
     }
