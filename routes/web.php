@@ -40,4 +40,6 @@ Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
     Route::get('payouts',    \App\Livewire\Admin\Payouts::class)->name('payouts');
     Route::get('drivers',      \App\Livewire\Admin\Drivers::class)->name('drivers');
     Route::get('transactions', \App\Livewire\Admin\Transactions::class)->name('transactions');
+    Route::get('profile',      \App\Livewire\Admin\AdminProfile::class)->name('profile');
+    Route::get('admins',       \App\Livewire\Admin\Admins::class)->name('admins');
 });

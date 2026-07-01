@@ -91,17 +91,41 @@
             @endforeach
         </nav>
 
+        {{-- Admins link — super_admin only --}}
+        @if (auth()->user()->role === 'super_admin')
+            @php $adminActive = request()->routeIs('admin.admins'); @endphp
+            <div class="px-3 pb-1">
+                <a href="{{ route('admin.admins') }}"
+                   @click="open = false"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors min-h-[44px]
+                          {{ $adminActive ? 'bg-primary text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    {{ __('admin.admins.title') }}
+                </a>
+            </div>
+        @endif
+
         {{-- User / logout --}}
         <div class="px-3 py-4 border-t border-gray-700 safe-b">
-            <div class="flex items-center gap-3 px-3 mb-3">
-                <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-xs font-bold shrink-0">
+            {{-- Profile link --}}
+            @php $profileActive = request()->routeIs('admin.profile'); @endphp
+            <a href="{{ route('admin.profile') }}"
+               @click="open = false"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors min-h-11 mb-1
+                      {{ $profileActive ? 'bg-primary text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <div class="w-8 h-8 bg-primary/80 rounded-full flex items-center justify-center text-xs font-bold shrink-0">
                     {{ strtoupper(substr(auth()->user()->first_name ?? 'A', 0, 1)) }}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium truncate">{{ auth()->user()->first_name ?? 'Admin' }}</p>
-                    <p class="text-xs text-gray-400">{{ __('admin.nav.super_admin') }}</p>
+                    <p class="font-medium truncate">{{ auth()->user()->first_name ?? 'Admin' }}</p>
+                    <p class="text-xs {{ $profileActive ? 'text-orange-100' : 'text-gray-500' }}">
+                        {{ auth()->user()->role === 'super_admin' ? __('admin.admins.super_admin') : __('admin.admins.admin') }}
+                    </p>
                 </div>
-            </div>
+            </a>
             <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
                 <button type="submit"

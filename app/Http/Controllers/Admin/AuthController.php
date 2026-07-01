@@ -24,7 +24,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            if (Auth::user()->role !== 'super_admin') {
+            if (! in_array(Auth::user()->role, ['admin', 'super_admin'])) {
                 Auth::logout();
                 return back()->withErrors(['email' => 'Access denied. Admins only.']);
             }
