@@ -4,24 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Sokoni — Tanzania's Multi-Vendor Marketplace</title>
-    <link rel="icon" type="image/jpeg" href="/images/sokonifavicon.jpeg">
-    <meta name="description" content="Shop fresh groceries, spices, vegetables and more from trusted local vendors across Tanzania.">
+    
+    <!-- Title -->
+    <title>Sokoni App - Tanzania's Multi-Vendor Marketplace | Fresh Groceries Online</title>
+    
+    <link rel="icon" type="image/jpeg" href="https://www.sokoniapp.co.tz/images/sokonifavicon.jpeg">
+    <link rel="apple-touch-icon" href="https://www.sokoniapp.co.tz/images/sokoniicon.jpeg">
+    
+    <!-- Google Verification -->
+    <meta name="google-site-verification" content="K7bsxOdc-a5BQ5c0OfT0-hbDFvjlTMpbM6O56swmAOY" />
+    
+    <!-- Primary Meta -->
+    <meta name="description" content="Download Sokoni App - Shop fresh vegetables, fruits, groceries & more from trusted local vendors across Tanzania. Fast delivery with M-Pesa & cash on delivery.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Sokoni">
+    <link rel="canonical" href="https://www.sokoniapp.co.tz/">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Sokoni">
+    <meta property="og:title" content="Sokoni App - Tanzania's Multi-Vendor Marketplace">
+    <meta property="og:description" content="Shop fresh groceries from local Tanzanian vendors. Fast delivery, M-Pesa payments. Download the app now!">
+    <meta property="og:url" content="https://www.sokoniapp.co.tz/">
+    <meta property="og:image" content="https://www.sokoniapp.co.tz/images/sokoniicon.jpeg">
+    <meta property="og:locale" content="en_TZ">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sokoni App - Tanzania's Multi-Vendor Marketplace">
+    <meta name="twitter:description" content="Fresh groceries from trusted local vendors in Tanzania. Download now!">
+    <meta name="twitter:image" content="https://www.sokoniapp.co.tz/images/sokoniicon.jpeg">
+    
+    <!-- Additional -->
+    <meta name="theme-color" content="#FF6600"> <!-- Changed to match your brand orange -->
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Structured Data -->
+    @verbatim
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Sokoni",
+        "applicationCategory": "ShoppingApplication",
+        "operatingSystem": "Android",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "TZS"
+        },
+        "description": "Tanzania's multi-vendor marketplace for fresh groceries and local products.",
+        "url": "https://www.sokoniapp.co.tz/",
+        "author": {
+            "@type": "Organization",
+            "name": "Sokoni"
+      }
+    }
+    </script>
+    @endverbatim
+    
+    <!-- CSS & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { primary:'#FF6600','primary-dark':'#CC5200','primary-light':'#FF8533' }, fontFamily:{ sans:['Inter','system-ui','sans-serif'] } } }
+            content: ["./**/*.{html,js}"],
+            theme: { 
+                extend: { 
+                    colors: { 
+                        primary: '#FF6600',
+                        'primary-dark': '#CC5200',
+                        'primary-light': '#FF8533' 
+                    }, 
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    } 
+                } 
+            }
         }
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
         html{scroll-behavior:smooth}
         body{font-family:'Inter',sans-serif}
         .gradient-hero{background:linear-gradient(135deg,#FF6600 0%,#FF8533 40%,#FFB366 100%)}
         .gradient-card{background:linear-gradient(135deg,#fff8f3 0%,#fff2e8 100%)}
         .blob{border-radius:60% 40% 30% 70%/60% 30% 70% 40%}
-        /* Step connector — only valid in the 4-column lg layout */
         .step-connector{position:relative}
         @media(min-width:1024px){
             .step-connector::after{content:'';position:absolute;top:24px;left:calc(50% + 28px);right:calc(-50% + 28px);height:2px;background:linear-gradient(to right,#FF6600,#FFB366)}
@@ -31,17 +104,13 @@
         .float-2{animation:float 3.2s ease-in-out infinite;animation-delay:.5s}
         .float-3{animation:float 3.2s ease-in-out infinite;animation-delay:1s}
         nav a{transition:color .2s}
-        /* Safe-area support for notched & punch-hole phones */
         .safe-x{padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
         .safe-b{padding-bottom:max(2rem,env(safe-area-inset-bottom))}
-        /* Prevent blue flash on tap for custom buttons */
         button,a{-webkit-tap-highlight-color:transparent}
-        /* Tiny phone (≤380px) hero font guard */
         @media(max-width:380px){
             .hero-h1{font-size:1.875rem!important;line-height:1.2!important}
             .hero-sub{font-size:.9rem!important}
         }
-        /* Mobile menu slide feel */
         #mobile-menu{transition:max-height .25s ease}
     </style>
 </head>

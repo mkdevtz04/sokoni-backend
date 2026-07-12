@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Privacy Policy — Sokoni</title>
+    <title>Privacy Policy - Sokoni</title>
     <link rel="icon" type="image/jpeg" href="/images/sokonifavicon.jpeg">
+    <meta name="google-site-verification" content="K7bsxOdc-a5BQ5c0OfT0-hbDFvjlTMpbM6O56swmAOY" />
+    <meta name="description" content="Read Sokoni's Privacy Policy to learn how we collect, use and protect personal information across our marketplace, website and mobile app.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ route('privacy') }}">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Sokoni">
+    <meta property="og:title" content="Privacy Policy - Sokoni">
+    <meta property="og:description" content="Learn how Sokoni collects, uses and protects personal information across our marketplace, website and mobile app.">
+    <meta property="og:url" content="{{ route('privacy') }}">
+    <meta property="og:image" content="{{ asset('images/sokoniicon.jpeg') }}">
+    <meta name="twitter:card" content="summary">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {

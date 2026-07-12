@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Become a Driver — Sokoni</title>
+    <title>Become a Driver - Sokoni</title>
+    <link rel="icon" type="image/jpeg" href="/images/sokonifavicon.jpeg">
+    <meta name="google-site-verification" content="K7bsxOdc-a5BQ5c0OfT0-hbDFvjlTMpbM6O56swmAOY" />
+    <meta name="description" content="Apply to become a Sokoni delivery driver in Tanzania and earn money delivering marketplace orders on your schedule.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ route('become-driver') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Sokoni">
+    <meta property="og:title" content="Become a Driver - Sokoni">
+    <meta property="og:description" content="Apply to become a Sokoni delivery driver in Tanzania and earn money delivering marketplace orders on your schedule.">
+    <meta property="og:url" content="{{ route('become-driver') }}">
+    <meta property="og:image" content="{{ asset('images/sokoniicon.jpeg') }}">
+    <meta name="twitter:card" content="summary">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
